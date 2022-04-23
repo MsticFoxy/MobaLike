@@ -120,7 +120,6 @@ public class StatValue<T> : StatBase
         {
             foreach (KeyValuePair<int, List<StatModifier<T>>> entry in modifiers)
             {
-                Debug.Log(entry.Value);
                 if (entry.Value.Contains(modifier))
                 {
                     entry.Value.Remove(modifier);

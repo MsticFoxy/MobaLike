@@ -12,7 +12,7 @@ public class WalkingTarget : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        controller.isControlledLocally = true;
     }
 
     // Update is called once per frame

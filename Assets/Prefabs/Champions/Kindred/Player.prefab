@@ -77,7 +77,7 @@ MonoBehaviour:
   gold:
     _baseValue: 0
   range:
-    _baseValue: 350
+    _baseValue: 500
   size:
     _baseValue: 0.5
   attackDamage:
@@ -152,6 +152,19 @@ MonoBehaviour:
       executionTime: 0.2
     - attackTime: 1
       executionTime: 0.2
+  canAttack:
+    _baseValue: 1
+  canManualMove:
+    _baseValue: 1
+  rotateTowardsDestination:
+    _baseValue: 1
+  PassiveAbility: {fileID: 0}
+  QAbility: {fileID: 0}
+  WAbility: {fileID: 0}
+  EAbility: {fileID: 0}
+  RAbility: {fileID: 0}
+  DUtilityAbility: {fileID: 0}
+  FUtilityAbility: {fileID: 0}
 --- !u!136 &7785926493913889708
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1012,6 +1025,9 @@ MonoBehaviour:
   agent: {fileID: 7785926493913889706}
   stats: {fileID: 7785926493913889704}
   characterController: {fileID: 7785926493913889709}
+  layerMaskGround:
+    serializedVersion: 2
+    m_Bits: 55
 --- !u!4 &7748323966351348161 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 70c6db2b85c86b44984f4e2368b9a5ee, type: 3}

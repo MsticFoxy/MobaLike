@@ -11,6 +11,8 @@ public class KindredAnimationController : MonoBehaviour
     public ChampionStats stats;
     public CharacterController characterController;
 
+    public LayerMask layerMaskGround;
+
     private bool attackAnimation = false;
 
     // Start is called before the first frame update
@@ -25,6 +27,54 @@ public class KindredAnimationController : MonoBehaviour
             animator.SetFloat("attackSpeed", stats.attackSpeed.value);
             animator.SetTrigger("triggerAttack");
         };
+        characterController.OnAbilityChanged += (slot) => {
+            if (slot == AbilitySlot.Q)
+            {
+                characterController.QAbility.AbilityDown += () =>
+                {
+                    Vector3 targetPoint = characterController.transform.forward;
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    if (Physics.Raycast(ray, out hit, 100, layerMaskGround))
+                    {
+                        targetPoint = hit.point - characterController.transform.position;
+                    }
+
+                    float angle = Vector3.SignedAngle(characterController.transform.forward, targetPoint, Vector3.up);
+                    Debug.Log(angle);
+                    if(Mathf.Abs(angle) < 45)
+                    {
+                        animator.SetTrigger("Q_Forward");
+                    }
+                    else if(Mathf.Abs(angle) < 135)
+                    {
+                        StopAllCoroutines();
+                        
+                        if (angle < 0)
+                        {
+                            StartCoroutine(rotate(-90, 0.64f));
+                            animator.SetTrigger("Q_Right");
+                        }
+                        else
+                        {
+                            StartCoroutine(rotate(90, 0.64f));
+                            animator.SetTrigger("Q_Left");
+                        }
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Q_Backward");
+                    }
+                };
+            }
+        };
+    }
+
+    IEnumerator rotate(float angle, float time)
+    {
+        transform.localRotation = Quaternion.Euler(0, angle, 0);
+        yield return new WaitForSeconds(time);
+        transform.localRotation = new Quaternion();
     }
 
     // Update is called once per frame
