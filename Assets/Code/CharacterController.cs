@@ -46,11 +46,14 @@ public class CharacterController : MonoBehaviour, IInteractable
     public AttackInfo attackInfo;
 
     public bool inAttack { get; private set; }
+    private float attackCooldown = 0;
 
     ChampionStats IInteractable.stats => stats;
 
     private int attackIndex;
     public Action<int> OnAttackExecuted;
+    public Action<int> OnAttackFired;
+
     private bool restartAttackIfInRange;
     public StatValue<bool> canAttack;
     private bool previousCanAttackState;
@@ -71,6 +74,10 @@ public class CharacterController : MonoBehaviour, IInteractable
     public Ability FUtilityAbility;
 
     public Action<AbilitySlot> OnAbilityChanged;
+
+    [Header("Attack Information")]
+    public GameObject attackGameObject;
+    public Transform attackSpawnLocation;
 
     // Start is called before the first frame update
     void Start()
@@ -128,6 +135,11 @@ public class CharacterController : MonoBehaviour, IInteractable
     void Update()
     {
         
+        if(attackCooldown > 0)
+        {
+            attackCooldown -= Time.deltaTime;
+        }
+
         HandleAbilityInput();
 
         if(attackTarget != null && canAttack.value)
@@ -137,9 +149,12 @@ public class CharacterController : MonoBehaviour, IInteractable
                 //Is Attacking
                 if (rotateTowardsDestination.value)
                 {
-                    agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-                            Quaternion.LookRotation(attackTarget.position - agent.transform.position),
-                            agent.angularSpeed * Time.deltaTime);
+                    if (attackCooldown <= 0)
+                    {
+                        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
+                                Quaternion.LookRotation(attackTarget.position - agent.transform.position),
+                                agent.angularSpeed * Time.deltaTime);
+                    }
                 }
                 agent.destination = transform.position;
                 if (restartAttackIfInRange)
@@ -305,6 +320,11 @@ public class CharacterController : MonoBehaviour, IInteractable
             if (attackTarget.stats != null)
             {
                 Attack(attackTarget.stats, attackIndex);
+                if (OnAttackFired != null)
+                {
+                    OnAttackFired.Invoke(attackIndex);
+                }
+                attackCooldown = attackInfo.attackTriggerTimes[attackIndex].attackTime - executionTime;
             }
         }
         
@@ -319,7 +339,12 @@ public class CharacterController : MonoBehaviour, IInteractable
             {
                 return (attackTarget.position - transform.position).magnitude <= attackTarget.radius + maxAttackRange;
             });
-            
+
+            yield return new WaitUntil( () =>
+            {
+                return attackCooldown <= 0;
+            });
+
             inAttack = true;
             while (inAttack)
             {
@@ -371,6 +396,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     {
         if (target != null && target != attackTarget)
         {
+            StopAttackCoroutines();
             SetDestination(target.position, target.radius + stats.range.value * 0.01f);
             attackTarget = target;
             // Make Char attack target
@@ -390,6 +416,16 @@ public class CharacterController : MonoBehaviour, IInteractable
         inAttack=false;
         restartAttackIfInRange = false;
         blockTargetFollow = false;
+    }
+
+    public void ResetAttack()
+    {
+        attackCooldown = 0;
+        StopAttackCoroutines();
+        if (attackTarget != null)
+        {
+            attackCoroutines.Add(StartCoroutine(AttackCoroutine()));
+        }
     }
 
     public void StopAttackCoroutines()
@@ -451,7 +487,16 @@ public class CharacterController : MonoBehaviour, IInteractable
 
     public void Attack(ChampionStats target, int attackIndex)
     {
-        target.Damage(stats, new DamageInfo(0, stats.attackDamage.value, 0, false));
+        GameObject attackObject = Instantiate(attackGameObject);
+        attackObject.transform.position = attackSpawnLocation.position;
+        attackObject.GetComponent<RangedAttack>().Initialize(stats, target,
+            new DamageInfo(0, stats.attackDamage.value, 0, false));
+    }
+    public void Attack(ChampionStats target, int attackIndex, DamageInfo damageInfo)
+    {
+        GameObject attackObject = Instantiate(attackGameObject);
+        attackObject.transform.position = attackSpawnLocation.position;
+        attackObject.GetComponent<RangedAttack>().Initialize(stats,target, damageInfo);
     }
 
     public void SetAbility(AbilitySlot slot, Ability ability)

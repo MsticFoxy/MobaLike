@@ -52,13 +52,13 @@ MonoBehaviour:
   health:
     _baseValue:
       _min: 0
-      _max: 630
-      _current: 630
+      _max: 540
+      _current: 540
   mana:
     _baseValue:
       _min: 0
-      _max: 1
-      _current: 0
+      _max: 300
+      _current: 300
   stamina:
     _baseValue:
       _min: 0
@@ -79,13 +79,13 @@ MonoBehaviour:
   range:
     _baseValue: 500
   size:
-    _baseValue: 0.5
+    _baseValue: 0.65
   attackDamage:
-    _baseValue: 0
+    _baseValue: 65
   armorPenetration:
     _baseValue: 0
   armor:
-    _baseValue: 0
+    _baseValue: 29
   attackSpeed:
     _baseValue: 1.15
   abilityPower:
@@ -93,7 +93,7 @@ MonoBehaviour:
   magicPenetration:
     _baseValue: 0
   magicResistence:
-    _baseValue: 0
+    _baseValue: 30
   abilityHaste:
     _baseValue: 0
   lifeSteal:
@@ -101,11 +101,11 @@ MonoBehaviour:
   healPower:
     _baseValue: 0
   healthRegeneration:
-    _baseValue: 0
+    _baseValue: 7
   manaRegeneration:
-    _baseValue: 0
+    _baseValue: 7
   movementSpeed:
-    _baseValue: 350
+    _baseValue: 325
   tenacity:
     _baseValue: 0
   slowResistence:
@@ -147,7 +147,7 @@ MonoBehaviour:
   attackInfo:
     attackTriggerTimes:
     - attackTime: 1
-      executionTime: 0.2
+      executionTime: 0.5
     - attackTime: 1
       executionTime: 0.2
     - attackTime: 1
@@ -165,6 +165,8 @@ MonoBehaviour:
   RAbility: {fileID: 0}
   DUtilityAbility: {fileID: 0}
   FUtilityAbility: {fileID: 0}
+  attackGameObject: {fileID: 5783093060308904992, guid: cd5347079a4a71047baf141e9ea8662f, type: 3}
+  attackSpawnLocation: {fileID: 5974399060681926474}
 --- !u!136 &7785926493913889708
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -984,6 +986,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70c6db2b85c86b44984f4e2368b9a5ee, type: 3}
+--- !u!4 &5974399060681926474 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4531886417607283040, guid: 70c6db2b85c86b44984f4e2368b9a5ee, type: 3}
+  m_PrefabInstance: {fileID: 7785926494596494890}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6975023816891485051 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 70c6db2b85c86b44984f4e2368b9a5ee, type: 3}
