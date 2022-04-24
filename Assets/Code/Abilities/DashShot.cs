@@ -52,6 +52,7 @@ public class DashShot : Ability
         characterController.canAttack.RemoveModifier(mod);
         characterController.canManualMove.RemoveModifier(mod);
         characterController.rotateTowardsDestination.RemoveModifier(mod);
+        characterController.ResetAttack();
     }
 
     IEnumerator SpawnAttacks(List<ChampionStats> stats, float delay)
@@ -92,13 +93,24 @@ public class DashShot : Ability
         List<ChampionStats> list = new List<ChampionStats>();
         foreach(ChampionStats s in stats)
         {
-            if((s.transform.position - characterController.transform.position).magnitude <= 
-                targetRangeMultiplyer * characterController.stats.range.value  * 0.01f)
+            if (s != characterController.stats)
             {
-                list.Add(s);
-                if(list.Count >= 3)
+                bool targetable = true;
+                if(s.GetComponent<CharacterController>() != null)
                 {
-                    break;
+                    targetable = !s.GetComponent<CharacterController>().untargetable.value;
+                }
+                if (targetable)
+                {
+                    if ((s.transform.position - characterController.transform.position).magnitude <=
+                        targetRangeMultiplyer * characterController.stats.range.value * 0.01f)
+                    {
+                        list.Add(s);
+                        if (list.Count >= 3)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }

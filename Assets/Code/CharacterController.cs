@@ -61,7 +61,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     private Vector3 pendingMovePosition;
     private bool previousCanManualMoveState;
     public StatValue<bool> rotateTowardsDestination;
-    
+    public StatValue<bool> untargetable;
 
     private List<Coroutine> attackCoroutines = new List<Coroutine>();
 
@@ -74,6 +74,11 @@ public class CharacterController : MonoBehaviour, IInteractable
     public Ability FUtilityAbility;
 
     public Action<AbilitySlot> OnAbilityChanged;
+    public Action OnDied;
+    public float afterDeathDestructionDelay = 5;
+    public bool dead { get; private set; }
+
+    public bool interactable => !untargetable.value;
 
     [Header("Attack Information")]
     public GameObject attackGameObject;
@@ -121,6 +126,14 @@ public class CharacterController : MonoBehaviour, IInteractable
             }
         };
 
+        stats.health.OnStatChanged += () => 
+        {
+            if(stats.health.value.current <= 0)
+            {
+                Die();
+            }
+        };
+
         SetAbility(AbilitySlot.Passive, PassiveAbility);
         SetAbility(AbilitySlot.Q, QAbility);
         SetAbility(AbilitySlot.W, WAbility);
@@ -134,40 +147,42 @@ public class CharacterController : MonoBehaviour, IInteractable
     // Update is called once per frame
     void Update()
     {
-        
-        if(attackCooldown > 0)
+        if (!dead)
         {
-            attackCooldown -= Time.deltaTime;
-        }
-
-        HandleAbilityInput();
-
-        if(attackTarget != null && canAttack.value)
-        {
-            if ((attackTarget.position - transform.position).magnitude <= attackTarget.radius + maxAttackRange)
+            if (attackCooldown > 0)
             {
-                //Is Attacking
-                if (rotateTowardsDestination.value)
+                attackCooldown -= Time.deltaTime;
+            }
+
+            HandleAbilityInput();
+
+            if (attackTarget != null && canAttack.value)
+            {
+                if ((attackTarget.position - transform.position).magnitude <= attackTarget.radius + maxAttackRange)
                 {
-                    if (attackCooldown <= 0)
+                    //Is Attacking
+                    if (rotateTowardsDestination.value)
                     {
-                        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-                                Quaternion.LookRotation(attackTarget.position - agent.transform.position),
-                                agent.angularSpeed * Time.deltaTime);
+                        if (attackCooldown <= 0)
+                        {
+                            agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
+                                    Quaternion.LookRotation(attackTarget.position - agent.transform.position),
+                                    agent.angularSpeed * Time.deltaTime);
+                        }
+                    }
+                    agent.destination = transform.position;
+                    if (restartAttackIfInRange)
+                    {
+                        attackCoroutines.Add(StartCoroutine(AttackCoroutine()));
+                        restartAttackIfInRange = false;
                     }
                 }
-                agent.destination = transform.position;
-                if (restartAttackIfInRange)
+                else if (!blockTargetFollow)
                 {
-                    attackCoroutines.Add(StartCoroutine(AttackCoroutine()));
-                    restartAttackIfInRange = false;
+                    // follows target to Attack
+                    agent.destination = attackTarget.position;
+                    attackIndex = 0;
                 }
-            }
-            else if(!blockTargetFollow)
-            {
-                // follows target to Attack
-                agent.destination = attackTarget.position;
-                attackIndex = 0;
             }
         }
     }
@@ -394,11 +409,36 @@ public class CharacterController : MonoBehaviour, IInteractable
 
     public void SetAttackTarget(IInteractable target)
     {
+        if (attackTarget != null)
+        {
+            if (attackTarget is CharacterController)
+            {
+                CharacterController charCont = attackTarget as CharacterController;
+                charCont.untargetable.OnStatChanged -= AttackTargetUntargetabilityChanged;
+            }
+        }
         if (target != null && target != attackTarget)
         {
+
+            if (target is CharacterController)
+            {
+                CharacterController charCont = target as CharacterController;
+                if(charCont.untargetable.value)
+                {
+                    return;
+                }
+            }
+
             StopAttackCoroutines();
             SetDestination(target.position, target.radius + stats.range.value * 0.01f);
             attackTarget = target;
+            
+            if(attackTarget is CharacterController)
+            {
+                CharacterController charCont = attackTarget as CharacterController;
+                charCont.untargetable.OnStatChanged += AttackTargetUntargetabilityChanged;
+            }
+
             // Make Char attack target
             //inAttack = true;
             if (canAttack.value)
@@ -406,12 +446,18 @@ public class CharacterController : MonoBehaviour, IInteractable
                 attackCoroutines.Add(StartCoroutine(AttackCoroutine()));
             }
         }
+        if(target == null)
+        {
+            attackTarget = null;
+            StopAllCoroutines();
+            SetDestination(transform.position);
+        }
     }
 
     public void StopAttack()
     {
         StopAttackCoroutines();
-        attackTarget = null;
+        SetAttackTarget(null);
         attackIndex = 0;
         inAttack=false;
         restartAttackIfInRange = false;
@@ -421,8 +467,9 @@ public class CharacterController : MonoBehaviour, IInteractable
     public void ResetAttack()
     {
         attackCooldown = 0;
+        int attackCo = attackCoroutines.Count;
         StopAttackCoroutines();
-        if (attackTarget != null)
+        if (attackTarget != null && attackCo > 0 && attackTarget.interactable)
         {
             attackCoroutines.Add(StartCoroutine(AttackCoroutine()));
         }
@@ -540,5 +587,48 @@ public class CharacterController : MonoBehaviour, IInteractable
         {
             ability.RemoveFromParent();
         }
+    }
+
+    public void AttackTargetUntargetabilityChanged()
+    {
+        if (attackTarget != null)
+        {
+            if (attackTarget is CharacterController)
+            {
+                CharacterController charCont = attackTarget as CharacterController;
+                if(charCont.untargetable.value)
+                {
+                    SetAttackTarget(null);
+                }
+            }
+        }
+    }
+
+    public void Die()
+    {
+        if(OnDied != null)
+        {
+            OnDied.Invoke();
+        }
+        untargetable.AddModifier(10000, new StatModifier<bool>((val) => { return true; }));
+        StopAllCoroutines();
+        dead = true;
+        StartCoroutine(DeathSinkIntoGround());
+    }
+
+    IEnumerator DeathSinkIntoGround()
+    {
+        yield return new WaitForSeconds(afterDeathDestructionDelay);
+
+        Debug.Log("Sink");
+        float sunken = 0;
+        agent.updatePosition = false;
+        while (sunken < 1)
+        {
+            yield return new WaitForFixedUpdate();
+            transform.position -= Vector3.up * Time.deltaTime;
+            sunken += Time.deltaTime;
+        }
+        Destroy(gameObject);
     }
 }

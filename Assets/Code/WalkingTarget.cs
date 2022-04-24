@@ -32,7 +32,18 @@ public class WalkingTarget : MonoBehaviour
                     IInteractable interactable = hit.collider.GetComponent<IInteractable>();
                     if(interactable != null)
                     {
-                        interactable.Interact(controller.gameObject);
+                        if (interactable.interactable)
+                        {
+                            interactable.Interact(controller.gameObject);
+                        }
+                        else
+                        {
+                            if (Physics.Raycast(ray, out hit, 100, layerMaskGround))
+                            {
+                                controller.StopAttack();
+                                OnTargetPositionChanged(hit.point);
+                            }
+                        }
                     }
                 }
                 else if (Physics.Raycast(ray, out hit, 100, layerMaskGround))

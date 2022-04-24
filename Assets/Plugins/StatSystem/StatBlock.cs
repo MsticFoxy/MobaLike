@@ -47,6 +47,7 @@ public class StatBlock : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+        stats.Clear();
         initialized = true;
         foreach (Component c in gameObject.GetComponents(typeof(Component)))
         {

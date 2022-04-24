@@ -1536,7 +1536,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2072,7 +2072,7 @@ MonoBehaviour:
   cooldown:
     _baseValue: 5
   characterController: {fileID: 0}
-  attackSpeedMultiplyer: 1.5
+  attackSpeedMultiplyer: 1.85
   duration: 10
   maxAttacks: 3
 --- !u!114 &2093762898
@@ -2100,7 +2100,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7785926495935015865
 PrefabInstance:
@@ -2115,7 +2115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 4.33
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2123,7 +2123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3.14
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalRotation.w

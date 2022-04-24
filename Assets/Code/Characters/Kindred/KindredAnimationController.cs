@@ -41,7 +41,6 @@ public class KindredAnimationController : MonoBehaviour
                     }
 
                     float angle = Vector3.SignedAngle(characterController.transform.forward, targetPoint, Vector3.up);
-                    Debug.Log(angle);
                     if(Mathf.Abs(angle) < 45)
                     {
                         animator.SetTrigger("Q_Forward");
@@ -67,6 +66,11 @@ public class KindredAnimationController : MonoBehaviour
                     }
                 };
             }
+        };
+
+        characterController.OnDied += () =>
+        {
+            animator.SetTrigger("Die");
         };
     }
 

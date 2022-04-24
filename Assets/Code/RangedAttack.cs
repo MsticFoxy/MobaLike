@@ -37,7 +37,7 @@ public class RangedAttack : MonoBehaviour, AttackInstance
         {
             transform.position = Vector3.MoveTowards(transform.position, 
                 target.transform.position + Vector3.up, flyingSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.LookRotation(target.transform.position - transform.position);
+            transform.rotation = Quaternion.LookRotation(target.transform.position + Vector3.up - transform.position);
         }
         else
         {
