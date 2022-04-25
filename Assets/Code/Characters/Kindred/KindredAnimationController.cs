@@ -13,19 +13,21 @@ public class KindredAnimationController : MonoBehaviour
 
     public LayerMask layerMaskGround;
 
-    private bool attackAnimation = false;
-
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        characterController.OnAttackExecuted += (id) =>
+        characterController.OnAttackExecuted += (id, crit) =>
         {
             animator.SetFloat("walkingSpeed", 0);
             animator.SetInteger("attackIndex", id);
             animator.SetBool("attacking", characterController.inAttack);
             animator.SetFloat("attackSpeed", stats.attackSpeed.value);
             animator.SetTrigger("triggerAttack");
+            if(crit)
+            {
+                animator.SetTrigger("critical");
+            }
         };
         characterController.OnAbilityChanged += (slot) => {
             if (slot == AbilitySlot.Q)

@@ -36,6 +36,11 @@ public class ChampionStats : MonoBehaviour
     public StatValue<int> range;
     public StatValue<float> size;
 
+    [Header("Critical")]
+    public StatValue<int> critChance;
+    public StatValue<int> critDamage;
+    public StatValue<float> critResistence;
+
     [Header("Physical")]
     public StatValue<float> attackDamage;
     public StatValue<float> armorPenetration;
@@ -105,6 +110,12 @@ public class ChampionStats : MonoBehaviour
 
 
         dmg += damageInfo.physicalDamage * phyDmgMult + damageInfo.magicalDamage * magDmgMult;
+
+        if(damageInfo.critical)
+        {
+            float critDmgMult = Mathf.Clamp(1 - critResistence.value * 0.01f, 0, 1);
+            dmg *=  1 + ((instigator.critDamage.value - 100.0f)*0.01f) * critDmgMult;
+        }
 
         health.AddModifier(0, new DamageModifier(instigator, dmg));
         Debug.Log("Damage: " + dmg + " -> " + damageInfo);

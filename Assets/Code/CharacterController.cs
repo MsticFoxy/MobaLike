@@ -15,6 +15,7 @@ public struct AttackTriggerInfo
 [Serializable]
 public struct AttackInfo
 {
+    public AttackTriggerInfo critTriggerTime;
     public List<AttackTriggerInfo> attackTriggerTimes;
 }
 
@@ -51,7 +52,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     ChampionStats IInteractable.stats => stats;
 
     private int attackIndex;
-    public Action<int> OnAttackExecuted;
+    public Action<int, bool> OnAttackExecuted;
     public Action<int> OnAttackFired;
 
     private bool restartAttackIfInRange;
@@ -77,7 +78,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     public Action OnDied;
     public float afterDeathDestructionDelay = 5;
     public bool dead { get; private set; }
-
+    private int collidingCharacters = 0;
     public bool interactable => !untargetable.value;
 
     [Header("Attack Information")]
@@ -163,12 +164,12 @@ public class CharacterController : MonoBehaviour, IInteractable
                     //Is Attacking
                     if (rotateTowardsDestination.value)
                     {
-                        if (attackCooldown <= 0)
-                        {
+                        //if (attackCooldown <= 0)
+                        //{
                             agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                     Quaternion.LookRotation(attackTarget.position - agent.transform.position),
                                     agent.angularSpeed * Time.deltaTime);
-                        }
+                        //}
                     }
                     agent.destination = transform.position;
                     if (restartAttackIfInRange)
@@ -183,6 +184,32 @@ public class CharacterController : MonoBehaviour, IInteractable
                     agent.destination = attackTarget.position;
                     attackIndex = 0;
                 }
+            }
+        }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if(interactable != null && interactable.interactable)
+        {
+            if (!dead)
+            {
+                collidingCharacters++;
+                agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+            }
+        }
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable != null)
+        {
+            collidingCharacters--;
+            if (collidingCharacters <= 0)
+            {
+                agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             }
         }
     }
@@ -327,14 +354,14 @@ public class CharacterController : MonoBehaviour, IInteractable
         }
     }
 
-    IEnumerator AttackExecution(float executionTime, int attackIndex)
+    IEnumerator AttackExecution(float executionTime, int attackIndex, bool crit)
     {
         yield return new WaitForSeconds(executionTime);
         if(attackTarget != null)
         {
             if (attackTarget.stats != null)
             {
-                Attack(attackTarget.stats, attackIndex);
+                Attack(attackTarget.stats, attackIndex, crit);
                 if (OnAttackFired != null)
                 {
                     OnAttackFired.Invoke(attackIndex);
@@ -365,12 +392,25 @@ public class CharacterController : MonoBehaviour, IInteractable
             {
                 if (attackIndex < attackInfo.attackTriggerTimes.Count)
                 {
+                    bool isCritAttack = CheckKrit();
+
                     blockTargetFollow = true;
-                    OnAttackExecuted.Invoke(attackIndex);
-                    attackCoroutines.Add(StartCoroutine(AttackExecution(attackInfo.attackTriggerTimes[attackIndex].executionTime 
-                        / stats.attackSpeed.value, attackIndex)));
-                    yield return new WaitForSeconds(attackInfo.attackTriggerTimes[attackIndex].attackTime 
-                        / stats.attackSpeed.value);
+
+                    OnAttackExecuted.Invoke(attackIndex, isCritAttack);
+                    if (isCritAttack)
+                    {
+                        attackCoroutines.Add(StartCoroutine(AttackExecution(attackInfo.attackTriggerTimes[attackIndex].executionTime
+                            / stats.attackSpeed.value, attackIndex, isCritAttack)));
+                        yield return new WaitForSeconds(attackInfo.attackTriggerTimes[attackIndex].attackTime
+                            / stats.attackSpeed.value);
+                    }
+                    else
+                    {
+                        attackCoroutines.Add(StartCoroutine(AttackExecution(attackInfo.critTriggerTime.executionTime
+                            / stats.attackSpeed.value, attackIndex, isCritAttack)));
+                        yield return new WaitForSeconds(attackInfo.critTriggerTime.attackTime
+                            / stats.attackSpeed.value);
+                    }
                     if ((attackTarget.position - transform.position).magnitude >= attackTarget.radius + maxAttackRange)
                     {
                         blockTargetFollow = false;
@@ -388,6 +428,15 @@ public class CharacterController : MonoBehaviour, IInteractable
             }
         }
         yield return null;
+    }
+
+    public virtual bool CheckKrit()
+    {
+        if(UnityEngine.Random.Range(1,100) <= stats.critChance.value)
+        {
+            return true;
+        }
+        return false;
     }
 
     private void LateUpdate()
@@ -532,12 +581,12 @@ public class CharacterController : MonoBehaviour, IInteractable
         }
     }
 
-    public void Attack(ChampionStats target, int attackIndex)
+    public void Attack(ChampionStats target, int attackIndex, bool crit)
     {
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
         attackObject.GetComponent<RangedAttack>().Initialize(stats, target,
-            new DamageInfo(0, stats.attackDamage.value, 0, false));
+            new DamageInfo(0, stats.attackDamage.value, 0, crit));
     }
     public void Attack(ChampionStats target, int attackIndex, DamageInfo damageInfo)
     {
@@ -613,6 +662,7 @@ public class CharacterController : MonoBehaviour, IInteractable
         untargetable.AddModifier(10000, new StatModifier<bool>((val) => { return true; }));
         StopAllCoroutines();
         dead = true;
+        collidingCharacters = 0;
         StartCoroutine(DeathSinkIntoGround());
     }
 
@@ -620,7 +670,6 @@ public class CharacterController : MonoBehaviour, IInteractable
     {
         yield return new WaitForSeconds(afterDeathDestructionDelay);
 
-        Debug.Log("Sink");
         float sunken = 0;
         agent.updatePosition = false;
         while (sunken < 1)
