@@ -302,7 +302,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 100
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -359,6 +359,10 @@ PrefabInstance:
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785926493913889709, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+      propertyPath: canDieAnywhere
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889719, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_Name
@@ -421,6 +425,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   controller: {fileID: 2022182932}
+  attackTarget: {fileID: 1458842681}
 --- !u!23 &209040154
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -495,7 +500,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 100
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -552,6 +557,10 @@ PrefabInstance:
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785926493913889709, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+      propertyPath: canDieAnywhere
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889719, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_Name
@@ -1221,7 +1230,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 100
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -1278,6 +1287,10 @@ PrefabInstance:
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785926493913889709, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+      propertyPath: canDieAnywhere
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889719, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_Name
@@ -1562,6 +1575,177 @@ Transform:
   m_Children: []
   m_Father: {fileID: 129493225}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1458842680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1458842684}
+  - component: {fileID: 1458842683}
+  - component: {fileID: 1458842682}
+  - component: {fileID: 1458842681}
+  m_Layer: 0
+  m_Name: AttackTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1458842681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458842680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ca3dea7bf4606b428e39f7e4fe4e25d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackInfo:
+    critTriggerTime:
+      attackTime: 0
+      executionTime: 0
+    attackTriggerTimes: []
+  canAttack:
+    _baseValue: 0
+  canManualMove:
+    _baseValue: 0
+  rotateTowardsDestination:
+    _baseValue: 0
+  untargetable:
+    _baseValue: 0
+  PassiveAbility: {fileID: 0}
+  QAbility: {fileID: 0}
+  WAbility: {fileID: 0}
+  EAbility: {fileID: 0}
+  RAbility: {fileID: 0}
+  DUtilityAbility: {fileID: 0}
+  FUtilityAbility: {fileID: 0}
+  afterDeathDestructionDelay: 5
+  attackGameObject: {fileID: 0}
+  attackSpawnLocation: {fileID: 0}
+  canDieAnywhere: 0
+--- !u!114 &1458842682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458842680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3919b6f9631279f4e9254e2a094385eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health:
+    _baseValue:
+      _min: 0
+      _max: 1
+      _current: 0
+  mana:
+    _baseValue:
+      _min: 0
+      _max: 1
+      _current: 0
+  stamina:
+    _baseValue:
+      _min: 0
+      _max: 1
+      _current: 0
+  rage:
+    _baseValue:
+      _min: 0
+      _max: 1
+      _current: 0
+  experience:
+    _baseValue:
+      _min: 0
+      _max: 1
+      _current: 0
+  gold:
+    _baseValue: 0
+  range:
+    _baseValue: 0
+  size:
+    _baseValue: 0
+  critChance:
+    _baseValue: 0
+  critDamage:
+    _baseValue: 0
+  critResistence:
+    _baseValue: 0
+  attackDamage:
+    _baseValue: 0
+  armorPenetration:
+    _baseValue: 0
+  armor:
+    _baseValue: 0
+  attackSpeed:
+    _baseValue: 0
+  abilityPower:
+    _baseValue: 0
+  magicPenetration:
+    _baseValue: 0
+  magicResistence:
+    _baseValue: 0
+  abilityHaste:
+    _baseValue: 0
+  lifeSteal:
+    _baseValue: 0
+  healPower:
+    _baseValue: 0
+  healthRegeneration:
+    _baseValue: 0
+  manaRegeneration:
+    _baseValue: 0
+  movementSpeed:
+    _baseValue: 0
+  tenacity:
+    _baseValue: 0
+  slowResistence:
+    _baseValue: 0
+--- !u!195 &1458842683
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458842680}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.1
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
+--- !u!4 &1458842684
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458842680}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8.613792, y: 0, z: -4.416456}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1491516739
 PrefabInstance:
@@ -1862,7 +2046,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 100
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -1919,6 +2103,10 @@ PrefabInstance:
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785926493913889709, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+      propertyPath: canDieAnywhere
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889719, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_Name
@@ -2241,10 +2429,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
-      propertyPath: attackSpeed._baseValue
-      value: 1.86
-      objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -441,7 +441,7 @@ MonoBehaviour:
   armor:
     _baseValue: 29
   attackSpeed:
-    _baseValue: 1.15
+    _baseValue: 0.75
   abilityPower:
     _baseValue: 0
   magicPenetration:
@@ -527,6 +527,7 @@ MonoBehaviour:
   afterDeathDestructionDelay: 5
   attackGameObject: {fileID: 5783093060308904992, guid: cd5347079a4a71047baf141e9ea8662f, type: 3}
   attackSpawnLocation: {fileID: 5974399060681926474}
+  canDieAnywhere: 1
 --- !u!136 &7785926493913889708
 CapsuleCollider:
   m_ObjectHideFlags: 0

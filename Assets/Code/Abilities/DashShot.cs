@@ -99,6 +99,7 @@ public class DashShot : Ability
                 if(s.GetComponent<CharacterController>() != null)
                 {
                     targetable = !s.GetComponent<CharacterController>().untargetable.value;
+                    targetable = s.GetComponent<CharacterController>().canDieAnywhere;
                 }
                 if (targetable)
                 {

@@ -46,8 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6cbe853f87557c48a62544125964f05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flyingSpeed: 20
-  hitDistance: 0.1
+  flyingSpeed: 10
+  radius: 0.25
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!23 &1113769675780519435
 MeshRenderer:
   m_ObjectHideFlags: 0

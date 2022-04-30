@@ -84,6 +84,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     [Header("Attack Information")]
     public GameObject attackGameObject;
     public Transform attackSpawnLocation;
+    public bool canDieAnywhere = true;
 
     // Start is called before the first frame update
     void Start()
@@ -127,13 +128,16 @@ public class CharacterController : MonoBehaviour, IInteractable
             }
         };
 
-        stats.health.OnStatChanged += () => 
+        if (canDieAnywhere)
         {
-            if(stats.health.value.current <= 0)
+            stats.health.OnStatChanged += () =>
             {
-                Die();
-            }
-        };
+                if (stats.health.value.current <= 0)
+                {
+                    Die();
+                }
+            };
+        }
 
         SetAbility(AbilitySlot.Passive, PassiveAbility);
         SetAbility(AbilitySlot.Q, QAbility);
@@ -397,7 +401,7 @@ public class CharacterController : MonoBehaviour, IInteractable
                     blockTargetFollow = true;
 
                     OnAttackExecuted.Invoke(attackIndex, isCritAttack);
-                    if (isCritAttack)
+                    if (!isCritAttack)
                     {
                         attackCoroutines.Add(StartCoroutine(AttackExecution(attackInfo.attackTriggerTimes[attackIndex].executionTime
                             / stats.attackSpeed.value, attackIndex, isCritAttack)));
@@ -583,16 +587,20 @@ public class CharacterController : MonoBehaviour, IInteractable
 
     public void Attack(ChampionStats target, int attackIndex, bool crit)
     {
+        Vector3 attackPos = (target.transform.position - transform.position).normalized * 0.01f 
+            * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
-        attackObject.GetComponent<RangedAttack>().Initialize(stats, target,
+        attackObject.GetComponent<RangedAttack>().Initialize(stats, attackPos,
             new DamageInfo(0, stats.attackDamage.value, 0, crit));
     }
     public void Attack(ChampionStats target, int attackIndex, DamageInfo damageInfo)
     {
+        Vector3 attackPos = (target.transform.position - transform.position).normalized * 0.01f
+            * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
-        attackObject.GetComponent<RangedAttack>().Initialize(stats,target, damageInfo);
+        attackObject.GetComponent<RangedAttack>().Initialize(stats,attackPos, damageInfo);
     }
 
     public void SetAbility(AbilitySlot slot, Ability ability)
@@ -658,6 +666,10 @@ public class CharacterController : MonoBehaviour, IInteractable
         if(OnDied != null)
         {
             OnDied.Invoke();
+        }
+        if(GetComponent<CapsuleCollider>())
+        {
+            GetComponent<CapsuleCollider>().enabled = false;
         }
         untargetable.AddModifier(10000, new StatModifier<bool>((val) => { return true; }));
         StopAllCoroutines();

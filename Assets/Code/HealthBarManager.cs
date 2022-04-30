@@ -22,11 +22,13 @@ public class HealthBarManager : MonoBehaviour
             }
         };
         healthBar.fillAmount = health.value.current / health.value.max;
+        transform.SetParent(null);
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+        transform.position = statBlock.transform.position + Vector3.up * 2.25f;
     }
 }
