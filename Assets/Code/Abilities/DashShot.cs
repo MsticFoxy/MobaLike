@@ -23,7 +23,8 @@ public class DashShot : Ability
     // Update is called once per frame
     void Update()
     {
-        if(inDash)
+        BaseUpdate();
+        if (inDash)
         {
             if(characterController != null)
             {
@@ -39,6 +40,11 @@ public class DashShot : Ability
                 }
             }
         }
+    }
+
+    protected override void BaseUpdate()
+    {
+        base.BaseUpdate();
     }
 
     IEnumerator StatModification()
@@ -60,7 +66,7 @@ public class DashShot : Ability
         yield return new WaitForSeconds(delay);
         foreach(ChampionStats s in stats)
         {
-            characterController.Attack(s, 0, damageInfo);
+            characterController.Attack(s.transform.position, 0, damageInfo);
         }
     }
 
@@ -98,8 +104,7 @@ public class DashShot : Ability
                 bool targetable = true;
                 if(s.GetComponent<CharacterController>() != null)
                 {
-                    targetable = !s.GetComponent<CharacterController>().untargetable.value;
-                    targetable = s.GetComponent<CharacterController>().canDieAnywhere;
+                    targetable = s.GetComponent<CharacterController>().IsInteractable(characterController.gameObject);
                 }
                 if (targetable)
                 {
@@ -119,6 +124,7 @@ public class DashShot : Ability
         StartCoroutine(SpawnAttacks(list, 0.15f));
 
         StartCoroutine(StatModification());
+        StartCooldown();
     }
 
     protected override void RemovedFromParent()

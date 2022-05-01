@@ -19,15 +19,16 @@ public class AttackSpeedBoost : Ability
     // Update is called once per frame
     void Update()
     {
-        
+        BaseUpdate();
     }
 
     IEnumerator StatModification()
     {
         characterController.stats.attackSpeed.AddModifier(0, mod);
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(Mathf.Min(duration, GetCooldown()*0.95f));
         characterController.stats.attackSpeed.RemoveModifier(mod);
         characterController.OnAttackFired -= CountAttack;
+        StartCooldown();
     }
 
     public override void AbilityButtonDown()
@@ -36,6 +37,7 @@ public class AttackSpeedBoost : Ability
         currentAttack = 0;
         characterController.OnAttackFired += CountAttack;
         characterController.ResetAttack();
+        StartCast();
         StartCoroutine(StatModification());
     }
 
@@ -46,6 +48,8 @@ public class AttackSpeedBoost : Ability
         {
             characterController.stats.attackSpeed.RemoveModifier(mod);
             characterController.OnAttackFired -= CountAttack;
+            StopAllCoroutines();
+            StartCooldown();
         }
     }
 }

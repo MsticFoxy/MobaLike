@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using MyBox;
 
 
 [Serializable]
@@ -30,6 +31,13 @@ public enum AbilitySlot
     F
 }
 
+public enum Team
+{
+    Player,
+    Neutral,
+    Enemy
+}
+
 [RequireComponent(typeof(NavMeshAgent), typeof(ChampionStats))]
 public class CharacterController : MonoBehaviour, IInteractable
 {
@@ -44,7 +52,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     private bool blockTargetFollow;
     protected float maxAttackRange => stats.range.value * 0.01f;
 
-    public AttackInfo attackInfo;
+    
 
     public bool inAttack { get; private set; }
     private float attackCooldown = 0;
@@ -55,36 +63,78 @@ public class CharacterController : MonoBehaviour, IInteractable
     public Action<int, bool> OnAttackExecuted;
     public Action<int> OnAttackFired;
 
+    [Foldout("Interaction")]
+    public AttackInfo attackInfo;
+    [Foldout("Interaction")]
+    public List<GameObject> ignoreInteractObjects;
+    [Foldout("Interaction")]
+    public Team team;
+
+
     private bool restartAttackIfInRange;
+    [Foldout("Attack Behavior")]
     public StatValue<bool> canAttack;
     private bool previousCanAttackState;
+    [Foldout("Attack Behavior")]
     public StatValue<bool> canManualMove;
     private Vector3 pendingMovePosition;
     private bool previousCanManualMoveState;
+    [Foldout("Attack Behavior")]
     public StatValue<bool> rotateTowardsDestination;
+
+    [Foldout("Attack Information")]
+    public GameObject attackGameObject;
+    [Foldout("Attack Information")]
+    public Transform attackSpawnLocation;
+    [Foldout("Attack Information")]
+    public bool canDieAnywhere = true;
+    [Foldout("Attack Information")]
+    public bool canRotateAfterAttackStarted;
+    private Vector3 attackLocationIfCanNotRotate;
+
+
+    [Foldout("Character State")]
     public StatValue<bool> untargetable;
+    [Foldout("Character State")]
+    public float afterDeathDestructionDelay = 5;
 
     private List<Coroutine> attackCoroutines = new List<Coroutine>();
 
+    [Foldout("Abilities")]
     public Ability PassiveAbility;
+    [Foldout("Abilities")]
     public Ability QAbility;
+    [Foldout("Abilities")]
     public Ability WAbility;
+    [Foldout("Abilities")]
     public Ability EAbility;
+    [Foldout("Abilities")]
     public Ability RAbility;
+    [Foldout("Abilities")]
     public Ability DUtilityAbility;
+    [Foldout("Abilities")]
     public Ability FUtilityAbility;
 
     public Action<AbilitySlot> OnAbilityChanged;
     public Action OnDied;
-    public float afterDeathDestructionDelay = 5;
+
     public bool dead { get; private set; }
     private int collidingCharacters = 0;
     public bool interactable => !untargetable.value;
 
-    [Header("Attack Information")]
-    public GameObject attackGameObject;
-    public Transform attackSpawnLocation;
-    public bool canDieAnywhere = true;
+    
+
+    #region CombatEvents
+    /// <summary>
+    /// ChampionStats -> the stats that the OnHit is applied to.
+    /// </summary>
+    public Action<ChampionStats> OnHit;
+
+    /// <summary>
+    /// ChampionStats -> the stats that the auto attack hit.
+    /// </summary>
+    public Action<ChampionStats> OnAutoAttackHit;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -93,7 +143,8 @@ public class CharacterController : MonoBehaviour, IInteractable
         stats = GetComponent<ChampionStats>();
 
         agent.updateRotation = false;
-        
+        NavMesh.avoidancePredictionTime = 0.5f;
+        NavMesh.pathfindingIterationsPerFrame = 100;
 
         stats.movementSpeed.OnStatChanged += () => {
             agent.speed = stats.movementSpeed.value * 0.01f; };
@@ -165,15 +216,25 @@ public class CharacterController : MonoBehaviour, IInteractable
             {
                 if ((attackTarget.position - transform.position).magnitude <= attackTarget.radius + maxAttackRange)
                 {
-                    //Is Attacking
-                    if (rotateTowardsDestination.value)
+                    if (canRotateAfterAttackStarted)
                     {
-                        //if (attackCooldown <= 0)
-                        //{
+                        //Is Attacking
+                        if (rotateTowardsDestination.value)
+                        {
+                            //if (attackCooldown <= 0)
+                            //{
                             agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                     Quaternion.LookRotation(attackTarget.position - agent.transform.position),
                                     agent.angularSpeed * Time.deltaTime);
-                        //}
+                            //}
+                        }
+                        
+                    }
+                    else
+                    {
+                        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
+                                    Quaternion.LookRotation(attackLocationIfCanNotRotate - agent.transform.position),
+                                    agent.angularSpeed * Time.deltaTime);
                     }
                     agent.destination = transform.position;
                     if (restartAttackIfInRange)
@@ -200,7 +261,7 @@ public class CharacterController : MonoBehaviour, IInteractable
             if (!dead)
             {
                 collidingCharacters++;
-                agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+                //agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
             }
         }
     }
@@ -213,7 +274,7 @@ public class CharacterController : MonoBehaviour, IInteractable
             collidingCharacters--;
             if (collidingCharacters <= 0)
             {
-                agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+                //agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             }
         }
     }
@@ -222,137 +283,117 @@ public class CharacterController : MonoBehaviour, IInteractable
     {
         if (isControlledLocally)
         {
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (QAbility != null)
             {
-                if (QAbility != null)
+                if (QAbility.IsCastable())
                 {
-                    QAbility.AbilityButtonDown();
-                }
-            }
-            else if (Input.GetKey(KeyCode.Q))
-            {
-                if (QAbility != null)
-                {
-                    QAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.Q))
-            {
-                if (QAbility != null)
-                {
-                    QAbility.AbilityButtonUp();
+                    if (Input.GetKeyDown(KeyCode.Q))
+                    {
+                        QAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.Q))
+                    {
+                        QAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.Q))
+                    {
+                        QAbility.AbilityButtonUp();
+                    }
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.W))
+            if (WAbility != null)
             {
-                if (WAbility != null)
+                if (WAbility.IsCastable())
                 {
-                    WAbility.AbilityButtonDown();
-                }
-            }
-            else if (Input.GetKey(KeyCode.W))
-            {
-                if (WAbility != null)
-                {
-                    WAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.W))
-            {
-                if (WAbility != null)
-                {
-                    WAbility.AbilityButtonUp();
+                    if (Input.GetKeyDown(KeyCode.W))
+                    {
+                        WAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.W))
+                    {
+                        WAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.W))
+                    {
+                        WAbility.AbilityButtonUp();
+                    }
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (EAbility != null)
             {
-                if (EAbility != null)
+                if (EAbility.IsCastable())
                 {
-                    EAbility.AbilityButtonDown();
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        EAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.E))
+                    {
+                        EAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.E))
+                    {
+                        EAbility.AbilityButtonUp();
+                    }
                 }
             }
-            else if (Input.GetKey(KeyCode.E))
+            if (RAbility != null)
             {
-                if (EAbility != null)
+                if (RAbility.IsCastable())
                 {
-                    EAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.E))
-            {
-                if (EAbility != null)
-                {
-                    EAbility.AbilityButtonUp();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                if (RAbility != null)
-                {
-                    RAbility.AbilityButtonDown();
-                }
-            }
-            else if (Input.GetKey(KeyCode.R))
-            {
-                if (RAbility != null)
-                {
-                    RAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.R))
-            {
-                if (RAbility != null)
-                {
-                    RAbility.AbilityButtonUp();
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        RAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.R))
+                    {
+                        RAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.R))
+                    {
+                        RAbility.AbilityButtonUp();
+                    }
                 }
             }
 
             // Utility
-            if (Input.GetKeyDown(KeyCode.D))
+            if (DUtilityAbility != null)
             {
-                if (DUtilityAbility != null)
+                if (DUtilityAbility.IsCastable())
                 {
-                    DUtilityAbility.AbilityButtonDown();
-                }
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                if (DUtilityAbility != null)
-                {
-                    DUtilityAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.D))
-            {
-                if (DUtilityAbility != null)
-                {
-                    DUtilityAbility.AbilityButtonUp();
+                    if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        DUtilityAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.D))
+                    {
+                        DUtilityAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.D))
+                    {
+                        DUtilityAbility.AbilityButtonUp();
+                    }
                 }
             }
 
-
-            if (Input.GetKeyDown(KeyCode.F))
+            if (FUtilityAbility != null)
             {
-                if (FUtilityAbility != null)
+                if (FUtilityAbility.IsCastable())
                 {
-                    FUtilityAbility.AbilityButtonDown();
-                }
-            }
-            else if (Input.GetKey(KeyCode.F))
-            {
-                if (FUtilityAbility != null)
-                {
-                    FUtilityAbility.AbilityButtonHold();
-                }
-            }
-            else if (Input.GetKeyUp(KeyCode.F))
-            {
-                if (FUtilityAbility != null)
-                {
-                    FUtilityAbility.AbilityButtonUp();
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        FUtilityAbility.AbilityButtonDown();
+                    }
+                    else if (Input.GetKey(KeyCode.F))
+                    {
+                        FUtilityAbility.AbilityButtonHold();
+                    }
+                    else if (Input.GetKeyUp(KeyCode.F))
+                    {
+                        FUtilityAbility.AbilityButtonUp();
+                    }
                 }
             }
         }
@@ -365,7 +406,14 @@ public class CharacterController : MonoBehaviour, IInteractable
         {
             if (attackTarget.stats != null)
             {
-                Attack(attackTarget.stats, attackIndex, crit);
+                if (!canRotateAfterAttackStarted)
+                {
+                    Attack(attackLocationIfCanNotRotate, attackIndex, crit);
+                }
+                else
+                {
+                    Attack(attackTarget.position, attackIndex, crit);
+                }
                 if (OnAttackFired != null)
                 {
                     OnAttackFired.Invoke(attackIndex);
@@ -397,6 +445,11 @@ public class CharacterController : MonoBehaviour, IInteractable
                 if (attackIndex < attackInfo.attackTriggerTimes.Count)
                 {
                     bool isCritAttack = CheckKrit();
+
+                    if(!canRotateAfterAttackStarted)
+                    {
+                        attackLocationIfCanNotRotate = attackTarget.position;
+                    }
 
                     blockTargetFollow = true;
 
@@ -585,18 +638,18 @@ public class CharacterController : MonoBehaviour, IInteractable
         }
     }
 
-    public void Attack(ChampionStats target, int attackIndex, bool crit)
+    public void Attack(Vector3 target, int attackIndex, bool crit)
     {
-        Vector3 attackPos = (target.transform.position - transform.position).normalized * 0.01f 
+        Vector3 attackPos = (target - transform.position).normalized * 0.01f 
             * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
         attackObject.GetComponent<RangedAttack>().Initialize(stats, attackPos,
             new DamageInfo(0, stats.attackDamage.value, 0, crit));
     }
-    public void Attack(ChampionStats target, int attackIndex, DamageInfo damageInfo)
+    public void Attack(Vector3 target, int attackIndex, DamageInfo damageInfo)
     {
-        Vector3 attackPos = (target.transform.position - transform.position).normalized * 0.01f
+        Vector3 attackPos = (target - transform.position).normalized * 0.01f
             * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
@@ -636,6 +689,21 @@ public class CharacterController : MonoBehaviour, IInteractable
                 OnAbilityChanged.Invoke(slot);
             }
         }
+    }
+
+    public Ability GetAbilityBySlot(AbilitySlot slot)
+    {
+        switch(slot)
+        {
+            case AbilitySlot.Passive: return PassiveAbility;
+            case AbilitySlot.Q: return QAbility;
+            case AbilitySlot.W: return WAbility;
+            case AbilitySlot.E: return EAbility;
+            case AbilitySlot.R: return RAbility;
+            case AbilitySlot.D: return DUtilityAbility;
+            case AbilitySlot.F: return FUtilityAbility;
+        }
+        return null;
     }
 
     public void RemoveAbility(Ability ability)
@@ -691,5 +759,10 @@ public class CharacterController : MonoBehaviour, IInteractable
             sunken += Time.deltaTime;
         }
         Destroy(gameObject);
+    }
+
+    public bool IsInteractable(GameObject instigator)
+    {
+        return !ignoreInteractObjects.Contains(instigator) && interactable && canDieAnywhere && !untargetable.value;
     }
 }

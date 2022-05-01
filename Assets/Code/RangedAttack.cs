@@ -43,13 +43,27 @@ public class RangedAttack : MonoBehaviour, AttackInstance
                 target + Vector3.up, flyingSpeed * Time.deltaTime);
             Vector3 end = transform.position;
 
-            if(Physics.SphereCast(start,radius, end - start, out RaycastHit hit, (end - start).magnitude, hitMask))
+            foreach(RaycastHit hit in Physics.SphereCastAll(start,radius, end - start, (end - start).magnitude, hitMask))
             {
-                ChampionStats stats = hit.collider.GetComponent<ChampionStats>();
-                if(stats != null)
+                if (hit.collider.gameObject != instigator.gameObject)
                 {
-                    stats.Damage(instigator, damageInfo);
-                    Destroy(gameObject);
+                    ChampionStats stats = hit.collider.GetComponent<ChampionStats>();
+
+                    if (stats != null && stats.characterController.team != instigator.characterController.team)
+                    {
+                        stats.Damage(instigator, damageInfo);
+                        if (instigator.characterController.OnAutoAttackHit != null)
+                        {
+                            instigator.characterController.OnAutoAttackHit(stats);
+                        }
+                        if (instigator.characterController.OnHit != null)
+                        {
+                            instigator.characterController.OnHit.Invoke(stats);
+                        }
+                        Destroy(gameObject);
+                        break;
+                    }
+                    
                 }
             }
 

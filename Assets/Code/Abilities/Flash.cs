@@ -18,7 +18,7 @@ public class Flash : Ability
     // Update is called once per frame
     void Update()
     {
-        
+        BaseUpdate();
     }
 
     public override void AbilityButtonDown()
@@ -46,5 +46,6 @@ public class Flash : Ability
         }
 
         characterController.agent.Warp(destination);
+        StartCooldown();
     }
 }

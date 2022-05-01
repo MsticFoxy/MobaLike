@@ -83,6 +83,7 @@ public class KindredAnimationController : MonoBehaviour
         transform.localRotation = new Quaternion();
     }
 
+    float prevVel;
     // Update is called once per frame
     void Update()
     {
@@ -90,9 +91,10 @@ public class KindredAnimationController : MonoBehaviour
         {
             if (!characterController.inAttack)
             {
-                animator.SetFloat("walkingSpeed", agent.velocity.magnitude * 100.0f);
+                animator.SetFloat("walkingSpeed", Mathf.Max(agent.velocity.magnitude, prevVel) * 100.0f);
             }
-            animator.SetFloat("walkSpeedMulti", agent.velocity.magnitude * 0.25f);
+            animator.SetFloat("walkSpeedMulti", Mathf.Max(agent.velocity.magnitude, prevVel) * 0.25f);
+            prevVel = agent.velocity.magnitude;
             animator.SetFloat("healthPercent", (stats.health.value.current / stats.health.value.max)*100);
         }
     }

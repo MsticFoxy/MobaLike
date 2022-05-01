@@ -9,4 +9,6 @@ public interface IInteractable
     public ChampionStats stats { get;}
     public bool interactable { get;}
     public void Interact(GameObject instigator);
+
+    public bool IsInteractable(GameObject instigator);
 }
