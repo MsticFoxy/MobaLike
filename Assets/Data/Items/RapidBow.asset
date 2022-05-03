@@ -15,13 +15,89 @@ MonoBehaviour:
   sprite: {fileID: 0}
   itemName: 
   description: 
-  rarity: 0
-  price: 750
-  collectivePrice: 600
+  tier: 1
+  price: 250
+  collectivePrice: 850
+  priceVariance:
+    min: 225
+    max: 275
+  collectivePriceVariance:
+    min: 765
+    max: 935
   baseStatModifications:
-  - statIndicator: 8
-    addition: 0.1
-    growth: 40
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 8
+    addition: 0
+    growth: 6
+    additionVariance:
+      min: 0
+      max: 0
+    growthVariance:
+      min: 5.4
+      max: 6.6
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
+    addition: 15
+    growth: 0
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
+  childStatModifications:
+  - ownerString: Quickdraw
+    owner: {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
+    statIndicator: 8
+    addition: 0
+    growth: 12
+    additionVariance:
+      min: 0
+      max: 0
+    growthVariance:
+      min: 10.8
+      max: 13.2
+  - ownerString: Quickdraw
+    owner: {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
+    statIndicator: 8
+    addition: 0
+    growth: 12
+    additionVariance:
+      min: 0
+      max: 0
+    growthVariance:
+      min: 10.8
+      max: 13.2
+  collectiveStatModifiations:
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 8
+    addition: 0
+    growth: 30
+    additionVariance:
+      min: 0
+      max: 0
+    growthVariance:
+      min: 27
+      max: 33
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
+    addition: 15
+    growth: 0
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
   recipe:
+  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
+  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
+  ingredientOf:
+  - {fileID: 11400000, guid: a43698b2de23d46479a3c00c2d21ff42, type: 2}
+  previousRecipe:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}

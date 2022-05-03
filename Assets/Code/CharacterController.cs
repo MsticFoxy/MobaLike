@@ -743,6 +743,7 @@ public class CharacterController : MonoBehaviour, IInteractable
         StopAllCoroutines();
         dead = true;
         collidingCharacters = 0;
+        agent.enabled = false;
         StartCoroutine(DeathSinkIntoGround());
     }
 

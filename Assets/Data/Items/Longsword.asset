@@ -17,8 +17,39 @@ MonoBehaviour:
   description: 
   rarity: 0
   price: 350
+  collectivePrice: 350
+  priceVariance:
+    min: 315
+    max: 385
+  collectivePriceVariance:
+    min: 315
+    max: 385
   baseStatModifications:
-  - statIndicator: 7
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
     addition: 15
     growth: 0
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
+  childStatModifications: []
+  collectiveStatModifiations:
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
+    addition: 15
+    growth: 0
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
   recipe: []
+  ingredientOf:
+  - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
+  previousRecipe: []

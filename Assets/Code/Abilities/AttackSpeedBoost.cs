@@ -25,7 +25,7 @@ public class AttackSpeedBoost : Ability
     IEnumerator StatModification()
     {
         characterController.stats.attackSpeed.AddModifier(0, mod);
-        yield return new WaitForSeconds(Mathf.Min(duration, GetCooldown()*0.95f));
+        yield return new WaitForSeconds(duration);
         characterController.stats.attackSpeed.RemoveModifier(mod);
         characterController.OnAttackFired -= CountAttack;
         StartCooldown();

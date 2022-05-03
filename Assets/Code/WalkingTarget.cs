@@ -87,7 +87,6 @@ public class WalkingTarget : MonoBehaviour
             attackTarget.transform.position = (attackTarget.position
                 - controller.position).normalized * 0.009f * controller.stats.range.value 
                 + controller.position;
-            Debug.Log("Repos");
         }
     }
 

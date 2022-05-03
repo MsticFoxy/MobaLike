@@ -15,10 +15,41 @@ MonoBehaviour:
   sprite: {fileID: 0}
   itemName: 
   description: 
-  rarity: 0
+  tier: 0
   price: 400
+  collectivePrice: 400
+  priceVariance:
+    min: 360
+    max: 440
+  collectivePriceVariance:
+    min: 360
+    max: 440
   baseStatModifications:
-  - statIndicator: 11
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 11
     addition: 10
     growth: 0
+    additionVariance:
+      min: 9
+      max: 11
+    growthVariance:
+      min: 0
+      max: 0
+  childStatModifications: []
+  collectiveStatModifiations:
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 11
+    addition: 10
+    growth: 0
+    additionVariance:
+      min: 9
+      max: 11
+    growthVariance:
+      min: 0
+      max: 0
   recipe: []
+  ingredientOf:
+  - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
+  previousRecipe: []

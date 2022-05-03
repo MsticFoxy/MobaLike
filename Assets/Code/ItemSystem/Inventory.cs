@@ -36,7 +36,7 @@ public class Inventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(stats.attackDamage.value);
+        
     }
 
     public void RemoveItem(Item item)

@@ -15,16 +15,78 @@ MonoBehaviour:
   sprite: {fileID: 0}
   itemName: 
   description: 
-  rarity: 1
-  price: 50
-  collectivePrice: 800
+  tier: 1
+  price: 600
+  collectivePrice: 1350
+  priceVariance:
+    min: 540
+    max: 660
+  collectivePriceVariance:
+    min: 1215
+    max: 1485
   baseStatModifications:
-  - statIndicator: 7
-    addition: 25
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
+    addition: 15
     growth: 0
-  - statIndicator: 11
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
+  childStatModifications:
+  - ownerString: Helmet
+    owner: {fileID: 11400000, guid: 26fc1df16f1524643a473312c1123974, type: 2}
+    statIndicator: 11
     addition: 10
-    growth: 5
+    growth: 0
+    additionVariance:
+      min: 9
+      max: 11
+    growthVariance:
+      min: 0
+      max: 0
+  - ownerString: Longsword
+    owner: {fileID: 11400000, guid: 4d80db02a7216d14da6f1f9cadc1ba8b, type: 2}
+    statIndicator: 7
+    addition: 15
+    growth: 0
+    additionVariance:
+      min: 13.5
+      max: 16.5
+    growthVariance:
+      min: 0
+      max: 0
+  collectiveStatModifiations:
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 7
+    addition: 30
+    growth: 0
+    additionVariance:
+      min: 27
+      max: 33
+    growthVariance:
+      min: 0
+      max: 0
+  - ownerString: 
+    owner: {fileID: 0}
+    statIndicator: 11
+    addition: 10
+    growth: 0
+    additionVariance:
+      min: 9
+      max: 11
+    growthVariance:
+      min: 0
+      max: 0
   recipe:
+  - {fileID: 11400000, guid: 26fc1df16f1524643a473312c1123974, type: 2}
+  - {fileID: 11400000, guid: 4d80db02a7216d14da6f1f9cadc1ba8b, type: 2}
+  ingredientOf:
+  - {fileID: 11400000, guid: a43698b2de23d46479a3c00c2d21ff42, type: 2}
+  previousRecipe:
   - {fileID: 11400000, guid: 26fc1df16f1524643a473312c1123974, type: 2}
   - {fileID: 11400000, guid: 4d80db02a7216d14da6f1f9cadc1ba8b, type: 2}

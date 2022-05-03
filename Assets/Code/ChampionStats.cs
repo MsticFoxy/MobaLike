@@ -110,7 +110,7 @@ public class ChampionStats : MonoBehaviour
 
         float def = armor.value - instigator.armorPenetration.value;
 
-        float phyDmgMult = 1;
+        float phyDmgMult;
         if(def >= 0)
         {
             phyDmgMult = 100.0f / (100.0f + def);
@@ -121,7 +121,7 @@ public class ChampionStats : MonoBehaviour
         }
 
 
-        float magDmgMult = 1;
+        float magDmgMult;
         if (def >= 0)
         {
             magDmgMult = 100.0f / (100.0f + def);

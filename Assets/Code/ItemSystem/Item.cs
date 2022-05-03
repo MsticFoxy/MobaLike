@@ -3,14 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyBox;
+using System.Linq;
+using UnityEditor;
 
-public enum Rarity
+public enum Tier
 {
-    Common,
-    Uncommon,
-    Rare,
-    Epic,
-    Legendary
+    Base,
+    Tier_1,
+    Tier_2,
+    Tier_3,
+    Tier_4,
+    Tier_5,
+    Tier_6,
+    Tier_7,
+    Tier_8,
+    Tier_9,
+    Tier_10
 }
 
 public enum StatIndicator
@@ -38,36 +46,259 @@ public enum StatIndicator
 }
 
 [Serializable]
+public struct VarianceInformation
+{
+    public float min;
+    public float max;
+
+    public static VarianceInformation operator +(VarianceInformation a, VarianceInformation b)
+    {
+        VarianceInformation ret = new VarianceInformation();
+        ret.min = a.min + b.min;
+        ret.max = a.max + b.max;
+        return ret;
+    }
+}
+
+[Serializable]
 public struct BaseStatModificationInformation
 {
+    [HideInInspector]
+    public string ownerString;
+    [ConditionalField(nameof(ownerString), true, "")]
+    public Item owner;
     public StatIndicator statIndicator;
     public float addition;
     [Tooltip("increases the stat by growth %")]
     public float growth;
+
+    [ReadOnly]
+    public VarianceInformation additionVariance;
+    [ReadOnly]
+    public VarianceInformation growthVariance;
+
+    public static BaseStatModificationInformation operator +(BaseStatModificationInformation a, BaseStatModificationInformation b)
+    {
+        BaseStatModificationInformation ret = new BaseStatModificationInformation();
+        ret.statIndicator = a.statIndicator;
+        ret.addition = a.addition + b.addition;
+        ret.growth = a.growth + b.growth;
+        ret.additionVariance = a.additionVariance + b.additionVariance;
+        ret.growthVariance = a.growthVariance + b.growthVariance;
+        return ret;
+    }
 }
 
 [CreateAssetMenu(fileName = "Item", menuName = "Items/Create Base Item", order = 1)]
 public class Item : ScriptableObject
 {
+    public static float variance = 10;
+    public static bool itemListIsDirty = true;
+    private List<Item> _items;
+    public List<Item> items 
+    { 
+        get
+        {
+            if(itemListIsDirty)
+            {
+                _items = GetListOfItems();
+            }
+            return _items;
+        }
+        private set
+        {
+            _items = value;
+        }
+    }
+
+
+    [Foldout("Information")]
     public Sprite sprite;
+    [Foldout("Information")]
     public string itemName;
+    [Foldout("Information")]
     public string description;
-    public Rarity rarity;
+    [Foldout("Information")]
+    public Tier tier;
+
+    [Foldout("Price")]
     public int price;
     [ReadOnly]
+    [Foldout("Price")]
     public int collectivePrice;
+    [ReadOnly]
+    [Foldout("Price")]
+    public VarianceInformation priceVariance;
+    [ReadOnly]
+    [Foldout("Price")]
+    public VarianceInformation collectivePriceVariance;
+
+    [Foldout("Modifications")]
     public List<BaseStatModificationInformation> baseStatModifications;
+    [ReadOnly]
+    [NonReorderable]
+    [Foldout("Modifications")]
+    public List<BaseStatModificationInformation> childStatModifications;
+    [ReadOnly]
+    [NonReorderable]
+    [Foldout("Modifications")]
+    public List<BaseStatModificationInformation> collectiveStatModifiations;
+
+    [Foldout("Recipies")]
+    public List<Item> recipe = new List<Item>();
+    [ReadOnly]
+    [NonReorderable]
+    [Foldout("Recipies")]
+    public List<Item> ingredientOf;
+
+    [HideInInspector]
+    public List<Item> previousRecipe;
+
     protected Dictionary<StatIndicator, List<StatModifier<float>>> modifiers = new Dictionary<StatIndicator, List<StatModifier<float>>>();
     protected Dictionary<StatIndicator, List<StatModifier<PoolValueFloat>>> poolMods = new Dictionary<StatIndicator, List<StatModifier<PoolValueFloat>>>();
 
-    public List<Item> recipe;
+    
     public Inventory inventory { get; private set; }
 
+    public Item()
+    {
+        #if UNITY_EDITOR
+        itemListIsDirty = true;
+        #endif
+    }
 
-    [ButtonMethod(0)]
-    public void ShowCollectivePrice()
+    protected List<BaseStatModificationInformation> GetCollectiveBaseStatModifications()
+    {
+        Dictionary<StatIndicator, BaseStatModificationInformation> mods = 
+            new Dictionary<StatIndicator, BaseStatModificationInformation>();
+
+        foreach(BaseStatModificationInformation bsm in baseStatModifications)
+        {
+            if (!mods.ContainsKey(bsm.statIndicator))
+            {
+                BaseStatModificationInformation b = new BaseStatModificationInformation();
+                b += bsm;
+                b.statIndicator = bsm.statIndicator;
+                mods.Add(bsm.statIndicator, b);
+            }
+            else
+            {
+                mods[bsm.statIndicator] += bsm;
+            }
+        }
+        foreach (BaseStatModificationInformation bsm in childStatModifications)
+        {
+            if (!mods.ContainsKey(bsm.statIndicator))
+            {
+                BaseStatModificationInformation b = new BaseStatModificationInformation();
+                b += bsm;
+                b.statIndicator = bsm.statIndicator;
+                mods.Add(bsm.statIndicator, b);
+            }
+            else
+            {
+                mods[bsm.statIndicator] += bsm;
+            }
+        }
+
+        List<BaseStatModificationInformation> ret = new List<BaseStatModificationInformation>();
+        foreach(KeyValuePair<StatIndicator, BaseStatModificationInformation> pair in mods)
+        {
+            ret.Add(pair.Value);
+        }
+        return ret;
+    }
+
+    private static List<Item> GetListOfItems()
+    {
+        List<Item> ret = new List<Item>();
+
+        string[] guids = AssetDatabase.FindAssets("t:" + typeof(Item).Name);
+        Item[] a = new Item[guids.Length];
+        for (int i = 0; i < guids.Length; i++)         //probably could get optimized 
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            a[i] = AssetDatabase.LoadAssetAtPath<Item>(path);
+        }
+        return a.ToList();
+    }
+
+    private List<Item> IngredientOf()
+    {
+        List<Item> ret = new List<Item>();
+
+        foreach (Item it in items)
+        {
+            if (it != this)
+            {
+                if (it.recipe != null)
+                {
+                    if (it.recipe.Contains(this))
+                    {
+                        ret.Add(it);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    public void ShowPriceInformation()
     {
         collectivePrice = GetPrice();
+        priceVariance = GetPriceVariance();
+        collectivePriceVariance = GetCollectivePriceVariance();
+    }
+
+    public void ShowChildStats()
+    {
+        childStatModifications.Clear();
+        foreach(Item it in recipe)
+        {
+            if (it != null)
+            {
+                foreach (BaseStatModificationInformation inf in it.collectiveStatModifiations)
+                {
+                    BaseStatModificationInformation mod = inf;
+                    mod.ownerString = it.name;
+                    mod.owner = it;
+                    childStatModifications.Add(mod);
+                }
+            }
+        }
+    }
+
+    public void ShowStatVariance()
+    {
+        for(int i = 0; i < baseStatModifications.Count; i++)
+        {
+            BaseStatModificationInformation mod = baseStatModifications[i];
+            mod.additionVariance.min = baseStatModifications[i].addition * (1.0f - Item.variance * 0.01f);
+            mod.additionVariance.max = baseStatModifications[i].addition * (1.0f + Item.variance * 0.01f);
+            mod.growthVariance.min = baseStatModifications[i].growth * (1.0f - Item.variance * 0.01f);
+            mod.growthVariance.max = baseStatModifications[i].growth * (1.0f + Item.variance * 0.01f);
+            baseStatModifications.RemoveAt(i);
+            baseStatModifications.Insert(i, mod);
+        }
+    }
+
+    private void OnValidate()
+    {
+        ShowStatVariance();
+        ShowPriceInformation();
+        ShowChildStats();
+        collectiveStatModifiations = GetCollectiveBaseStatModifications();
+        ingredientOf = IngredientOf();
+        foreach(Item it in previousRecipe)
+        {
+            it.ingredientOf = it.IngredientOf();
+        }
+        previousRecipe.Clear();
+        foreach(Item it in recipe)
+        {
+            it.ingredientOf = it.IngredientOf();
+            previousRecipe.Add(it);
+        }
     }
 
     public int GetPrice(int maxIterationDepth = 7)
@@ -77,10 +308,37 @@ public class Item : ScriptableObject
         {
             foreach (Item it in recipe)
             {
-                componentCost += it.GetPrice(maxIterationDepth - 1);
+                if (it != null)
+                {
+                    componentCost += it.GetPrice(maxIterationDepth - 1);
+                }
             }
         }
         return price + componentCost;
+    }
+
+    public VarianceInformation GetPriceVariance()
+    {
+        VarianceInformation priceVar = new VarianceInformation();
+        priceVar.min += price * (1.0f - Item.variance * 0.01f);
+        priceVar.max += price * (1.0f + Item.variance * 0.01f);
+        return priceVar;
+    }
+
+    public VarianceInformation GetCollectivePriceVariance(int maxIterationDepth = 7)
+    {
+        VarianceInformation componentCost = new VarianceInformation();
+        if (maxIterationDepth > 0)
+        {
+            foreach (Item it in recipe)
+            {
+                if (it != null)
+                {
+                    componentCost += it.GetCollectivePriceVariance(maxIterationDepth - 1);
+                }
+            }
+        }
+        return GetPriceVariance() + componentCost;
     }
 
     public bool SetInventory(Inventory inventory, bool canBeStolen = false)
@@ -187,7 +445,7 @@ public class Item : ScriptableObject
 
     public virtual void OnAddedToInventory()
     {
-        foreach(BaseStatModificationInformation bs in baseStatModifications)
+        foreach(BaseStatModificationInformation bs in collectiveStatModifiations)
         {
             if(bs.statIndicator == StatIndicator.Health)
             {
@@ -239,6 +497,7 @@ public class Item : ScriptableObject
                     GetStatByStatIndicator(bs.statIndicator).AddModifier(1, mult);
                     AddToMods(bs.statIndicator, add);
                     AddToMods(bs.statIndicator, mult);
+                    Debug.Log(bs.statIndicator + " -> " + add);
                 }
             }
         }

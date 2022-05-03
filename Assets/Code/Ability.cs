@@ -13,8 +13,7 @@ public enum AbilityType
 [RequireComponent(typeof(StatBlock))]
 public class Ability : MonoBehaviour
 {
-    public AbilityType type;
-
+    
     [Foldout("Information")]
     public Sprite sprite;
     [Foldout("Information")]
@@ -22,9 +21,16 @@ public class Ability : MonoBehaviour
     [Foldout("Information")]
     public string description;
 
+    [Foldout("Ability Basics")]
+    public AbilityType type;
+    [Foldout("Ability Basics")]
+    public StatValue<float> cooldown;
+    [Foldout("Ability Basics")]
+    public GameObject AbilityUI;
+
     public float currentCooldown { get; private set; }
     public bool inCast { get; private set; }
-    public StatValue<float> cooldown;
+    
     [HideInInspector]
     public CharacterController characterController;
 
@@ -45,12 +51,23 @@ public class Ability : MonoBehaviour
 
     public float GetCooldown()
     {
-        if(characterController != null)
+        if(characterController == null)
         {
             return cooldown.value;
         }
-        float cooldownMult = 1.0f + characterController.stats.abilityHaste.value * 0.01f;
+        float haste = characterController.stats.abilityHaste.value;
+        float cooldownMult = 1.0f - (haste / (haste + 100.0f));
         return cooldown.value * cooldownMult;
+    }
+
+    public virtual void ShowUI()
+    {
+
+    }
+
+    public virtual void HideUI()
+    {
+
     }
 
     public virtual bool IsCastable()
@@ -76,7 +93,6 @@ public class Ability : MonoBehaviour
 
     protected virtual void BaseUpdate()
     {
-        Debug.Log("update");
         if (!inCast)
         {
             if (currentCooldown > 0)

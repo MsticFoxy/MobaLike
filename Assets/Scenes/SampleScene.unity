@@ -302,7 +302,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -516,7 +516,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -1375,7 +1375,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -1750,7 +1750,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -1767,6 +1767,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1156482319}
+  - {fileID: 2020261130}
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1918,12 +1919,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cac5984dbf3ef234ab0698f41070aaf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
   sprite: {fileID: 21300000, guid: bbaca07693373214daa3a2ae13524cf1, type: 3}
   abilityName: 
   description: 
+  type: 0
   cooldown:
-    _baseValue: 30
+    _baseValue: 70
+  AbilityUI: {fileID: 0}
   characterController: {fileID: 0}
   dashDistance: 4
   layerMaskGround:
@@ -2567,12 +2569,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45d1b922a26f69e419dd6dd0fdc369f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
   sprite: {fileID: 21300000, guid: bb8c2975543ee584c8600c342d43c6f5, type: 3}
   abilityName: 
   description: 
+  type: 1
   cooldown:
-    _baseValue: 3
+    _baseValue: 12
+  AbilityUI: {fileID: 0}
   characterController: {fileID: 0}
   dashDistance: 2
   dashTime: 0.4
@@ -2582,8 +2585,8 @@ MonoBehaviour:
     m_Bits: 55
   damageInfo:
     trueDamage: 25
-    physicalDamage: 75
-    magicalDamage: 60
+    physicalDamage: 25
+    magicalDamage: 20
     critical: 0
 --- !u!114 &1532727781
 MonoBehaviour:
@@ -2769,7 +2772,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: range._baseValue
-      value: 500
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: attackSpeed._baseValue
@@ -3255,6 +3258,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 439c238b2662f964a8e114907ef6f102, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2020261129
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2020261130}
+  - component: {fileID: 2020261132}
+  - component: {fileID: 2020261131}
+  m_Layer: 5
+  m_Name: ItemShop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2020261130
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020261129}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1227553462}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2020261131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020261129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2020261132
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020261129}
+  m_CullTransparentMesh: 1
 --- !u!4 &2022182928 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
@@ -3466,12 +3545,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebffed21b95401a4c8f75324851eff47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
   sprite: {fileID: 21300000, guid: 72504e05408de8b4b8b7118a53672a7f, type: 3}
   abilityName: 
   description: 
+  type: 1
   cooldown:
     _baseValue: 20
+  AbilityUI: {fileID: 0}
   characterController: {fileID: 0}
   attackSpeedMultiplyer: 1.85
   duration: 10
@@ -3707,7 +3787,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: critChance._baseValue
-      value: 30
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7785926493913889704, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+      propertyPath: abilityHaste._baseValue
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7785926493913889705, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
       propertyPath: m_RootOrder
@@ -3802,7 +3886,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialItems:
   - {fileID: 11400000, guid: 4d80db02a7216d14da6f1f9cadc1ba8b, type: 2}
-  - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
-  - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
+  - {fileID: 11400000, guid: 1ccdb3fa0e0ad1d4db5d8005a35bd702, type: 2}
   maxItemCount: 10
   items: []
