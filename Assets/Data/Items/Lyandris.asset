@@ -16,14 +16,14 @@ MonoBehaviour:
   itemName: 
   description: 
   tier: 2
-  price: 500
-  collectivePrice: 3000
+  price: 550
+  collectivePrice: 3050
   priceVariance:
-    min: 450
-    max: 550
+    min: 495
+    max: 605
   collectivePriceVariance:
-    min: 2700
-    max: 3300
+    min: 2745
+    max: 3355
   baseStatModifications: []
   childStatModifications:
   - ownerString: Quickdraw
@@ -119,8 +119,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
-  ingredientOf: []
+  ingredientOf:
+  - {fileID: 11400000, guid: 1ccdb3fa0e0ad1d4db5d8005a35bd702, type: 2}
   previousRecipe:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
+  effects:
+  - {fileID: 11400000, guid: 9b44e22853fc23841b2da7101af7e1d7, type: 2}
+  - {fileID: 11400000, guid: 0ede1e91e9c16624a8f14f96e60b1bcd, type: 2}
+  activeAbility: {fileID: 5883526301555899722, guid: 255bec97841c55745ad11c8695c957fd, type: 3}
+  instanceVariance: 0

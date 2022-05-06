@@ -155,3 +155,5 @@ MonoBehaviour:
   previousRecipe:
   - {fileID: 11400000, guid: a43698b2de23d46479a3c00c2d21ff42, type: 2}
   - {fileID: 11400000, guid: b0c38bd542740b14d976f45a2d4db9e0, type: 2}
+  effects:
+  - effect: {fileID: 11400000, guid: 96d0509605834bb4d81d7b45554bcdcc, type: 2}

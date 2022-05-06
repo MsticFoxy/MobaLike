@@ -15,7 +15,7 @@ MonoBehaviour:
   sprite: {fileID: 0}
   itemName: 
   description: 
-  rarity: 0
+  tier: 0
   price: 300
   collectivePrice: 300
   priceVariance:
@@ -54,3 +54,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a43698b2de23d46479a3c00c2d21ff42, type: 2}
   - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
   previousRecipe: []
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: -10

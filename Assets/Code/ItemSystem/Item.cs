@@ -89,13 +89,20 @@ public struct BaseStatModificationInformation
     }
 }
 
-[CreateAssetMenu(fileName = "Item", menuName = "Items/Create Base Item", order = 1)]
+[Serializable]
+public class ItemEffectChild : ItemEffect
+{
+    public string strength;
+}
+
+
+[CreateAssetMenu(fileName = "Item", menuName = "Items/Create Base Item", order = 0)]
 public class Item : ScriptableObject
 {
     public static float variance = 10;
     public static bool itemListIsDirty = true;
-    private List<Item> _items;
-    public List<Item> items 
+    private static List<Item> _items;
+    public static List<Item> items 
     { 
         get
         {
@@ -153,6 +160,23 @@ public class Item : ScriptableObject
 
     [HideInInspector]
     public List<Item> previousRecipe;
+
+    [Foldout("Effects")]
+    public List<ItemEffect> effects;
+    [Foldout("Effects")]
+    [DisplayInspector]
+    public Ability activeAbility;
+
+    //[ReadOnly]
+    [Foldout("Information")]
+    public float instanceVariance;
+    private float varianceDelta
+    {
+        get
+        {
+            return ((instanceVariance / variance) + 1.0f) / 2.0f;
+        }
+    }
 
     protected Dictionary<StatIndicator, List<StatModifier<float>>> modifiers = new Dictionary<StatIndicator, List<StatModifier<float>>>();
     protected Dictionary<StatIndicator, List<StatModifier<PoolValueFloat>>> poolMods = new Dictionary<StatIndicator, List<StatModifier<PoolValueFloat>>>();
@@ -299,6 +323,27 @@ public class Item : ScriptableObject
             it.ingredientOf = it.IngredientOf();
             previousRecipe.Add(it);
         }
+
+        foreach(ItemEffect ie in ItemEffect.globalItemEffecs)
+        {
+            if (ie != null)
+            {
+                if (ie.effectOf.Contains(this))
+                {
+                    ie.effectOf.Remove(this);
+                }
+            }
+        }
+        foreach (ItemEffect ie in effects)
+        {
+            if(ie != null)
+            {
+                if(!ie.effectOf.Contains(this))
+                {
+                    ie.effectOf.Add(this);
+                }
+            }
+        }
     }
 
     public int GetPrice(int maxIterationDepth = 7)
@@ -315,6 +360,11 @@ public class Item : ScriptableObject
             }
         }
         return price + componentCost;
+    }
+    
+    public int GetInstancePrice()
+    {
+        return Mathf.RoundToInt(Mathf.Lerp(priceVariance.min, priceVariance.max, varianceDelta));
     }
 
     public VarianceInformation GetPriceVariance()
@@ -529,5 +579,10 @@ public class Item : ScriptableObject
         }
         modifiers.Clear();
         poolMods.Clear();
+    }
+
+    public override int GetHashCode()
+    {
+        return ("Item" + name + description + tier.ToString()).GetHashCode();
     }
 }
