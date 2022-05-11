@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: ArmorSword
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 1f0565b5613832043bafe11368c676b2, type: 3}
+  itemName: Armor Sword
   description: 
   tier: 1
   price: 600
@@ -90,3 +90,6 @@ MonoBehaviour:
   previousRecipe:
   - {fileID: 11400000, guid: 26fc1df16f1524643a473312c1123974, type: 2}
   - {fileID: 11400000, guid: 4d80db02a7216d14da6f1f9cadc1ba8b, type: 2}
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

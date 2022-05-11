@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: RapidBow
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: e431f8171df04d441aca3090cb90f07c, type: 3}
+  itemName: Rapid Bow
   description: 
   tier: 1
   price: 250
@@ -101,3 +101,6 @@ MonoBehaviour:
   previousRecipe:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

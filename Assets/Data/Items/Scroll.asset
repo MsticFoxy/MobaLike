@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: Scroll
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: f7fd10bd6c3219b469e64b4617f12003, type: 3}
+  itemName: Scroll
   description: 
   tier: 0
   price: 325
@@ -53,3 +53,6 @@ MonoBehaviour:
   ingredientOf:
   - {fileID: 11400000, guid: b0c38bd542740b14d976f45a2d4db9e0, type: 2}
   previousRecipe: []
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: Helmet
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 12b58cd4420c5644b9883e0de7921f69, type: 3}
+  itemName: Helmet
   description: 
   tier: 0
   price: 400
@@ -53,3 +53,6 @@ MonoBehaviour:
   ingredientOf:
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
   previousRecipe: []
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

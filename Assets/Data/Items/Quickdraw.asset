@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: Quickdraw
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 099aee0d05c5b78409723eff11747866, type: 3}
+  itemName: Quickdraw
   description: 
   tier: 0
   price: 300
@@ -56,4 +56,4 @@ MonoBehaviour:
   previousRecipe: []
   effects: []
   activeAbility: {fileID: 0}
-  instanceVariance: -10
+  instanceVariance: 0

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: Longsword
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 61c904aed85ac6a47bb76c779e9a1fd8, type: 3}
+  itemName: Longsword
   description: 
-  rarity: 0
+  tier: 0
   price: 350
   collectivePrice: 350
   priceVariance:
@@ -53,3 +53,6 @@ MonoBehaviour:
   ingredientOf:
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
   previousRecipe: []
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

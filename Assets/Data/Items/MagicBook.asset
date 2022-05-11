@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: MagicBook
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 117937cba822e894886716455644308a, type: 3}
+  itemName: Magic Book
   description: 
   tier: 1
   price: 200
@@ -90,3 +90,6 @@ MonoBehaviour:
   previousRecipe:
   - {fileID: 11400000, guid: e39227d7f71ca9c47b7a039196185420, type: 2}
   - {fileID: 11400000, guid: e39227d7f71ca9c47b7a039196185420, type: 2}
+  effects: []
+  activeAbility: {fileID: 0}
+  instanceVariance: 0

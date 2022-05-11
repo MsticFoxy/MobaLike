@@ -3,14 +3,17 @@ Shader "Unlit/DesaturateShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Alpha ("Alpha", 2D) = "white" {}
         [MaterialToggle] _Desaturate ("Desaturate", float) = 0
         [MaterialToggle] _BlackOut ("Black Out", float) = 0
         _BlackOutAmount ("Black Out Amount", Range(0, 1)) = 0.75
+
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
+
 
         Pass
         {
@@ -36,6 +39,7 @@ Shader "Unlit/DesaturateShader"
             };
 
             sampler2D _MainTex;
+            sampler2D _Alpha;
             float4 _MainTex_ST;
             float _Desaturate;
             float _BlackOut;
@@ -54,12 +58,13 @@ Shader "Unlit/DesaturateShader"
             {
                 // sample the texture
                 float4 col = tex2D(_MainTex, i.uv);
+                float4 alpha = tex2D(_Alpha, i.uv);
                 
                 float ill = col.x * 0.2126f + col.y * 0.7152f + col.z * 0.0722f;
 
                 float black = 1.0f - _BlackOutAmount * _BlackOut;
 
-                return ((float4(ill,ill,ill,col.w) * _Desaturate) + col * (1.0f - _Desaturate)) * black;
+                return ((float4(ill,ill,ill,col.w * alpha.w) * _Desaturate) + col * (1.0f - _Desaturate)) * black;
             }
             ENDCG
         }

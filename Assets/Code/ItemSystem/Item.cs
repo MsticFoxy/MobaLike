@@ -581,8 +581,8 @@ public class Item : ScriptableObject
         poolMods.Clear();
     }
 
-    public override int GetHashCode()
+    public string GetItemStringCode()
     {
-        return ("Item" + name + description + tier.ToString()).GetHashCode();
+        return "Item" + itemName + description + tier.ToString();
     }
 }

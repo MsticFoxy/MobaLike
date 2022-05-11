@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7609bd4e0ad8a4baa38b00ee1bd5f1, type: 3}
   m_Name: Spellfire
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  itemName: 
+  sprite: {fileID: 21300000, guid: 89e22a4e54efd254e984a9639c717585, type: 3}
+  itemName: Spellfire
   description: 
   tier: 3
   price: 350
-  collectivePrice: 4200
+  collectivePrice: 4255
   priceVariance:
     min: 315
     max: 385
   collectivePriceVariance:
-    min: 3780
-    max: 4620
+    min: 3829.5
+    max: 4680.5
   baseStatModifications:
   - ownerString: 
     owner: {fileID: 0}
@@ -156,4 +156,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a43698b2de23d46479a3c00c2d21ff42, type: 2}
   - {fileID: 11400000, guid: b0c38bd542740b14d976f45a2d4db9e0, type: 2}
   effects:
-  - effect: {fileID: 11400000, guid: 96d0509605834bb4d81d7b45554bcdcc, type: 2}
+  - {fileID: 0}
+  activeAbility: {fileID: 0}
+  instanceVariance: 0
