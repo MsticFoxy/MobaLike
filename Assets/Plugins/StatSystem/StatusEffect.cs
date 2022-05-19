@@ -2,9 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatusEffect
+public enum EffectPriority
+{
+    Standard = 10,
+    First = 0,
+    Second = 1,
+    Early = 5,
+    Late = 100,
+    Last = 999999
+}
+
+public class StatusEffect : ScriptableObject
 {
     public StatBlock owner { get; private set; }
+    public GameObject visualEffect;
+    protected GameObject vfxInstance;
 
     public virtual void Tick()
     {
@@ -19,6 +31,25 @@ public class StatusEffect
     public virtual void End()
     {
 
+    }
+
+    public void SpawnVisualEffect()
+    {
+        if (vfxInstance != null)
+        {
+            if (visualEffect != null)
+            {
+                vfxInstance = Instantiate(visualEffect);
+            }
+        }
+    }
+
+    public void RemoveVisualEffect()
+    {
+        if (vfxInstance == null)
+        {
+            Destroy(vfxInstance);
+        }
     }
 
     /// <summary>
@@ -54,11 +85,11 @@ public class StatusEffect
     /// <returns>Returns if the statuseffect could be removed.</returns>
     public bool RemoveFromOwner(StatBlock owner)
     {
-        if(this.owner != null && this.owner == owner)
+        /*if(this.owner != null && this.owner == owner)
         {
             this.owner = null;
             return true;
-        }
-        return false;
+        }*/
+        return true;
     }
 }

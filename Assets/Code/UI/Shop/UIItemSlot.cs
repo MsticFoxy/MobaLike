@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIItemSlot : MonoBehaviour
 {
@@ -10,11 +11,14 @@ public class UIItemSlot : MonoBehaviour
     public Image sprite;
     public Image spriteBackground;
     public Sprite backgroundImage;
+    public TextMeshProUGUI priceText;
     public bool isOwned = true;
+    public bool showPrice = false;
+    public bool useUpgradePrice = false;
 
     //from to
     public Action<Item, Item> OnItemChanged;
-    public ShopManager shopManager;
+    public ShopManager shopManager { get; set; }
     public bool inDrag { get; private set; }
 
     // Start is called before the first frame update
@@ -24,7 +28,7 @@ public class UIItemSlot : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (item != null)
         {
@@ -41,6 +45,15 @@ public class UIItemSlot : MonoBehaviour
             {
                 sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.0f);
                 spriteBackground.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.8f) * 0.5f;
+            }
+            priceText.enabled = showPrice;
+            if (isOwned)
+            {
+                priceText.color = new Color(1, 1, 1, 0.4f);
+            }
+            else
+            {
+                priceText.color = Color.white;
             }
         }
     }
@@ -78,6 +91,21 @@ public class UIItemSlot : MonoBehaviour
             spriteBackground.sprite = item.sprite;
         }
         sprite.fillAmount = GetAbilityFillAmount();
+        if (item != null)
+        {
+            if (useUpgradePrice)
+            {
+                priceText.text = "" + item.GetInstancePrice();
+            }
+            else
+            {
+                priceText.text = "" + item.GetInstanceCollectivePrice();
+            }
+        }
+        else
+        {
+            priceText.text = "";
+        }
         //OnItemChanged?.Invoke(prevItem, item);
         if(OnItemChanged != null && isOwned)
         {

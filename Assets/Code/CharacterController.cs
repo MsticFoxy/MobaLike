@@ -136,6 +136,14 @@ public class CharacterController : MonoBehaviour, IInteractable
     public Action<ChampionStats> OnAutoAttackHit;
     #endregion
 
+    private void OnValidate()
+    {
+        if (GetComponent<ChampionStats>() != null)
+        {
+            SetGameplaySize(GetComponent<ChampionStats>().size.baseValue);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -149,6 +157,11 @@ public class CharacterController : MonoBehaviour, IInteractable
         stats.movementSpeed.OnStatChanged += () => {
             agent.speed = stats.movementSpeed.value * 0.01f; };
         stats.movementSpeed.OnStatChanged.Invoke();
+
+        stats.size.OnStatChanged += () =>
+        {
+            SetGameplaySize(stats.size.value);
+        };
 
         previousCanAttackState = canAttack.value;
         canAttack.OnStatChanged += () => 
@@ -203,7 +216,7 @@ public class CharacterController : MonoBehaviour, IInteractable
     // Update is called once per frame
     void Update()
     {
-        if (!dead)
+        if (!dead && !stats.isStunned.value)
         {
             if (attackCooldown > 0)
             {
@@ -276,6 +289,18 @@ public class CharacterController : MonoBehaviour, IInteractable
             {
                 //agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             }
+        }
+    }
+
+    public void SetGameplaySize(float size)
+    {
+        if (GetComponent<NavMeshAgent>() != null)
+        {
+            GetComponent<NavMeshAgent>().radius = size * 0.5f;
+        }
+        if (GetComponent<CapsuleCollider>() != null)
+        {
+            GetComponent<CapsuleCollider>().radius = size * 0.5f;
         }
     }
 
@@ -442,6 +467,7 @@ public class CharacterController : MonoBehaviour, IInteractable
             inAttack = true;
             while (inAttack)
             {
+                yield return new WaitUntil(() => { return !stats.isStunned.value; });
                 if (attackIndex < attackInfo.attackTriggerTimes.Count)
                 {
                     bool isCritAttack = CheckKrit();
@@ -644,7 +670,7 @@ public class CharacterController : MonoBehaviour, IInteractable
             * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
-        attackObject.GetComponent<RangedAttack>().Initialize(stats, attackPos,
+        attackObject.GetComponent<AttackInstance>().Initialize(stats, attackPos,
             new DamageInfo(0, stats.attackDamage.value, 0, crit));
     }
     public void Attack(Vector3 target, int attackIndex, DamageInfo damageInfo)
@@ -653,7 +679,7 @@ public class CharacterController : MonoBehaviour, IInteractable
             * stats.range.value + transform.position;
         GameObject attackObject = Instantiate(attackGameObject);
         attackObject.transform.position = attackSpawnLocation.position;
-        attackObject.GetComponent<RangedAttack>().Initialize(stats,attackPos, damageInfo);
+        attackObject.GetComponent<AttackInstance>().Initialize(stats,attackPos, damageInfo);
     }
 
     public void SetAbility(AbilitySlot slot, Ability ability)
@@ -756,7 +782,7 @@ public class CharacterController : MonoBehaviour, IInteractable
         while (sunken < 1)
         {
             yield return new WaitForFixedUpdate();
-            transform.position -= Vector3.up * Time.deltaTime;
+            transform.position -= Vector3.up * Time.deltaTime * 2.0f * stats.size.value;
             sunken += Time.deltaTime;
         }
         Destroy(gameObject);

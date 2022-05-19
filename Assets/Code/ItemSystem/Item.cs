@@ -367,6 +367,11 @@ public class Item : ScriptableObject
         return Mathf.RoundToInt(Mathf.Lerp(priceVariance.min, priceVariance.max, varianceDelta));
     }
 
+    public int GetInstanceCollectivePrice()
+    {
+        return Mathf.RoundToInt(Mathf.Lerp(collectivePriceVariance.min, collectivePriceVariance.max, varianceDelta));
+    }
+
     public VarianceInformation GetPriceVariance()
     {
         VarianceInformation priceVar = new VarianceInformation();

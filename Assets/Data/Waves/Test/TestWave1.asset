@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 773dc28c90a717b4f8960e825e8ecc22, type: 3}
+  m_Name: TestWave1
+  m_EditorClassIdentifier: 
+  spawnables:
+  - spawnObject: {fileID: 3102976475541005550, guid: 3322d55bebaf04f4e8d3f6de6d7ca194, type: 3}
+    rule: 0
+    probability: 10
+    probabilityRange: {x: 0, y: 10}
+  - spawnObject: {fileID: 7785926493913889719, guid: 44b4f8ba28a80f143b80b10e503f16e9, type: 3}
+    rule: 0
+    probability: 1
+    probabilityRange: {x: 10, y: 11}

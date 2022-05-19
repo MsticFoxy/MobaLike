@@ -17,13 +17,13 @@ MonoBehaviour:
   description: 
   tier: 2
   price: 555
-  collectivePrice: 3655
+  collectivePrice: 3055
   priceVariance:
     min: 499.5
     max: 610.5
   collectivePriceVariance:
-    min: 3289.5
-    max: 4020.5
+    min: 2749.5
+    max: 3360.5
   baseStatModifications: []
   childStatModifications:
   - ownerString: Quickdraw
@@ -81,40 +81,18 @@ MonoBehaviour:
     growthVariance:
       min: 0
       max: 0
-  - ownerString: Quickdraw
-    owner: {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
-    statIndicator: 8
-    addition: 0
-    growth: 12
-    additionVariance:
-      min: 0
-      max: 0
-    growthVariance:
-      min: 10.8
-      max: 13.2
-  - ownerString: Quickdraw
-    owner: {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
-    statIndicator: 8
-    addition: 0
-    growth: 12
-    additionVariance:
-      min: 0
-      max: 0
-    growthVariance:
-      min: 10.8
-      max: 13.2
   collectiveStatModifiations:
   - ownerString: 
     owner: {fileID: 0}
     statIndicator: 8
     addition: 0
-    growth: 66
+    growth: 42
     additionVariance:
       min: 0
       max: 0
     growthVariance:
-      min: 59.399998
-      max: 72.6
+      min: 37.8
+      max: 46.2
   - ownerString: 
     owner: {fileID: 0}
     statIndicator: 7
@@ -141,16 +119,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
-  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
-  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   ingredientOf:
   - {fileID: 11400000, guid: 1ccdb3fa0e0ad1d4db5d8005a35bd702, type: 2}
   previousRecipe:
   - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   - {fileID: 11400000, guid: 21b1a425ddd07994e894aa2238352195, type: 2}
   - {fileID: 11400000, guid: bdac1fb927489424a982cf84075d49c6, type: 2}
-  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
-  - {fileID: 11400000, guid: 669bdb486fd40b143804c7726b68ccb5, type: 2}
   effects:
   - {fileID: 11400000, guid: 9b44e22853fc23841b2da7101af7e1d7, type: 2}
   - {fileID: 11400000, guid: 0ede1e91e9c16624a8f14f96e60b1bcd, type: 2}

@@ -10,7 +10,6 @@ public enum AbilityType
     Active
 }
 
-[RequireComponent(typeof(StatBlock))]
 public class Ability : MonoBehaviour
 {
     
@@ -27,6 +26,8 @@ public class Ability : MonoBehaviour
     public StatValue<float> cooldown;
     [Foldout("Ability Basics")]
     public GameObject AbilityUI;
+    [Foldout("Ability Basics")]
+    public LayerMask mouseTargetLayerMask;
 
     public float currentCooldown { get; private set; }
     public bool inCast { get; private set; }
@@ -173,5 +174,16 @@ public class Ability : MonoBehaviour
     protected virtual void RemovedFromParent()
     {
 
+    }
+
+    protected Vector3 GetTargetPosition()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 100, mouseTargetLayerMask))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
     }
 }

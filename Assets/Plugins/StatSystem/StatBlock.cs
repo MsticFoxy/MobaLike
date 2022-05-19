@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-
+using MyBox;
 
 
 public class StatBlock : MonoBehaviour
@@ -18,6 +18,12 @@ public class StatBlock : MonoBehaviour
 
     private Dictionary<string, StatBase> stats = new Dictionary<string, StatBase>();
     public Dictionary<int, List<StatusEffect>> effects = new Dictionary<int, List<StatusEffect>>();
+
+#if UNITY_EDITOR
+    [ReadOnly]
+    [NonReorderable]
+    public List<StatusEffect> statusEffects = new List<StatusEffect>();
+#endif
 
     // Start is called before the first frame update
     void Start()
@@ -213,6 +219,9 @@ public class StatBlock : MonoBehaviour
                     newPrio.Add(effect);
                     effects.Add(priority, newPrio);
                 }
+#if UNITY_EDITOR
+                statusEffects.Add(effect);
+#endif
                 effect.Begin();
             }
         }
@@ -238,10 +247,13 @@ public class StatBlock : MonoBehaviour
                     if (entry.Value.Contains(effect))
                     {
                         entry.Value.Remove(effect);
+                        effect.End();
+#if UNITY_EDITOR
+                        statusEffects.Remove(effect);
+#endif
                         if (entry.Value.Count == 0)
                         {
                             effects.Remove(entry.Key);
-                            effect.End();
                             return;
                         }
                     }

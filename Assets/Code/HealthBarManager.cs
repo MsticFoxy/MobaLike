@@ -8,6 +8,12 @@ public class HealthBarManager : MonoBehaviour
     public StatBlock statBlock;
     private StatValue<PoolValueFloat> health;
     public Image healthBar;
+    public float yPosition;
+
+    private void OnValidate()
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, yPosition, transform.localPosition.z);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +35,6 @@ public class HealthBarManager : MonoBehaviour
     void LateUpdate()
     {
         transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
-        transform.position = statBlock.transform.position + Vector3.up * 2.25f;
+        transform.position = statBlock.transform.position + Vector3.up * yPosition;
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class ShopManager : MonoBehaviour
     public Transform combinationPossibilitiesTransform;
     public GameObject craftableItemPrefab;
     public List<Item> craftableItems;
+    public TextMeshProUGUI craftItemPriceText;
+    public int buyingPrice = 0;
     private int combiIndex;
 
     // Start is called before the first frame update
@@ -46,6 +49,7 @@ public class ShopManager : MonoBehaviour
         craftableItems = GetCraftableItems(combinationItems);
         Item combiItem = GetCombinationItem(combinationItems, combiIndex);
         combinationItemSlot.SetItem(combiItem);
+
         foreach(Transform t in combinationPossibilitiesTransform.GetComponentInChildren<Transform>())
         {
             Destroy(t.gameObject);
@@ -101,6 +105,7 @@ public class ShopManager : MonoBehaviour
         combinationItemSlots.Last().gameObject.SetActive(true);
         ClearNotOwnedItemSlots();
         combinationItem = target;
+        int ingredientPrice = 0;
         foreach (Item i in GetRemainingItems(target, combinationItems, -Item.variance))
         {
             UIItemSlot slot = combinationItemSlots.Last();
@@ -108,10 +113,23 @@ public class ShopManager : MonoBehaviour
             slot.SetItem(i);
             //Debug.Log(slot);
             AddCombinationSlot(true);
+            ingredientPrice += i.GetInstanceCollectivePrice();
         }
         if (combinationItemSlots.Count > 1)
         {
             combinationItemSlots.Last().gameObject.SetActive(false);
+        }
+
+        
+        if (combinationItem != null)
+        {
+            buyingPrice = (combinationItem.GetInstancePrice() + ingredientPrice);
+            craftItemPriceText.text = "" + buyingPrice;
+        }
+        else
+        {
+            buyingPrice = 0;
+            craftItemPriceText.text = "0";
         }
     }
 
@@ -122,6 +140,7 @@ public class ShopManager : MonoBehaviour
         UIItemSlot combinationSlot = go.GetComponent<UIItemSlot>();
         combinationSlot.shopManager = this;
         combinationSlot.isOwned = isOwned;
+        combinationSlot.showPrice = true;
         if (go.GetComponent<ShopDragHandler>() != null)
         {
             go.GetComponent<ShopDragHandler>().dragContainerTransform = dragContainerRectTransform;
@@ -268,8 +287,13 @@ public class ShopManager : MonoBehaviour
             float price = 0;
             foreach(Item i in craftingParts)
             {
-                variance += i.instanceVariance * i.GetInstancePrice();
-                price += i.GetInstancePrice();
+                variance += i.instanceVariance * i.GetInstanceCollectivePrice();
+                price += i.GetInstanceCollectivePrice();
+            }
+            foreach(Item i in GetRemainingItems(retList[index], craftingParts, -Item.variance))
+            {
+                variance += i.instanceVariance * i.GetInstanceCollectivePrice();
+                price += i.GetInstanceCollectivePrice();
             }
             variance = variance / price;
             Item ret = Instantiate(retList[index]);

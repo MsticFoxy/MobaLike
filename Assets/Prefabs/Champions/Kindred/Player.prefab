@@ -38,7 +38,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2.25}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1023243819
@@ -116,6 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statBlock: {fileID: 54725135526910766}
   healthBar: {fileID: 6200448289297312389}
+  yPosition: 0
 --- !u!1 &4085694820363213980
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,10 +445,6 @@ MonoBehaviour:
     _baseValue: 0.75
   abilityPower:
     _baseValue: 0
-  magicPenetration:
-    _baseValue: 0
-  magicResistence:
-    _baseValue: 30
   abilityHaste:
     _baseValue: 0
   lifeSteal:
@@ -464,6 +461,8 @@ MonoBehaviour:
     _baseValue: 0
   slowResistence:
     _baseValue: 0
+  isStunned:
+    _baseValue: 0
 --- !u!195 &7785926493913889706
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -473,7 +472,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7785926493913889719}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.45
+  m_Radius: 0.325
   m_Speed: 3.5
   m_Acceleration: 8000
   avoidancePriority: 50
@@ -509,14 +508,21 @@ MonoBehaviour:
       executionTime: 0.2
     - attackTime: 1
       executionTime: 0.2
+  ignoreInteractObjects: []
+  team: 0
   canAttack:
     _baseValue: 1
   canManualMove:
     _baseValue: 1
   rotateTowardsDestination:
     _baseValue: 1
+  attackGameObject: {fileID: 5783093060308904992, guid: cd5347079a4a71047baf141e9ea8662f, type: 3}
+  attackSpawnLocation: {fileID: 5974399060681926474}
+  canDieAnywhere: 1
+  canRotateAfterAttackStarted: 0
   untargetable:
     _baseValue: 0
+  afterDeathDestructionDelay: 5
   PassiveAbility: {fileID: 0}
   QAbility: {fileID: 0}
   WAbility: {fileID: 0}
@@ -524,10 +530,6 @@ MonoBehaviour:
   RAbility: {fileID: 0}
   DUtilityAbility: {fileID: 0}
   FUtilityAbility: {fileID: 0}
-  afterDeathDestructionDelay: 5
-  attackGameObject: {fileID: 5783093060308904992, guid: cd5347079a4a71047baf141e9ea8662f, type: 3}
-  attackSpawnLocation: {fileID: 5974399060681926474}
-  canDieAnywhere: 1
 --- !u!136 &7785926493913889708
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -538,7 +540,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.325
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -554,6 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0b693fc424ca441b6f3d608ee1b114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusEffects: []
 --- !u!54 &2022182937
 Rigidbody:
   m_ObjectHideFlags: 0

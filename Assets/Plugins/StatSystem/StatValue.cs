@@ -85,6 +85,17 @@ public class StatValue<T> : StatBase
         _isDirty = true;
     }
 
+
+    /// <summary>
+    /// Adds a modifier to this statvalue wich will be applied with the given priority.
+    /// </summary>
+    /// <param name="priority">The priority with wich the modifier will be applied.</param>
+    /// <param name="modifier">The modifier that will be applied to this stat.</param>
+    public void AddModifier(EffectPriority priority, StatModifier<T> modifier)
+    {
+        AddModifier((int)priority, modifier);
+    }
+
     /// <summary>
     /// Adds a modifier to this statvalue wich will be applied with the given priority.
     /// </summary>

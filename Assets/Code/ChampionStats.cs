@@ -83,6 +83,9 @@ public class ChampionStats : MonoBehaviour
     [Foldout("Movement")]
     public StatValue<float> slowResistence;
 
+    [HideInInspector]
+    public StatValue<bool> isStunned;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
